@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Tantri Cafe</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100">
+
+  <!-- Navbar / Slide Kategori -->
+  <div class="flex overflow-x-auto space-x-2 p-3 bg-white shadow sticky top-0 z-10">
+    <button class="category-btn px-4 py-2 rounded bg-red-600 text-white" data-category="all">Semua Menu</button>
+    <button class="category-btn px-4 py-2 rounded bg-gray-200" data-category="paket">Paket Spesial</button>
+    <button class="category-btn px-4 py-2 rounded bg-gray-200" data-category="breakfast">Breakfast</button>
+    <button class="category-btn px-4 py-2 rounded bg-gray-200" data-category="burgers">Burgers</button>
+    <button class="category-btn px-4 py-2 rounded bg-gray-200" data-category="alacarte">Ala Carte</button>
+  </div>
+
+  <!-- Container Produk -->
+  <div id="product-container" class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4 p-4 transition-opacity duration-300">
+  </div>
+
+  <!-- Bar Keranjang -->
+  <div id="cart" class="fixed bottom-0 left-0 right-0 bg-white shadow-lg p-4 transform translate-y-full transition-transform duration-300 flex justify-between items-center cursor-pointer">
+    <span id="cart-info" class="font-semibold text-red-600"></span>
+    <button class="bg-red-600 text-white px-6 py-2 rounded">Checkout</button>
+  </div>
+
+  <!-- Overlay Detail Keranjang -->
+  <div id="cart-detail" class="fixed bottom-0 left-0 right-0 bg-white shadow-2xl rounded-t-2xl transform translate-y-full transition-transform duration-300 max-h-[80vh] flex flex-col">
+    <div class="p-4 border-b flex justify-between items-center">
+      <h2 class="font-bold text-lg">Keranjang Saya</h2>
+      <button onclick="toggleCartDetail()" class="text-gray-500">✕</button>
+    </div>
+    <div id="cart-items" class="overflow-y-auto flex-1 p-4 space-y-3">
+      <!-- Produk keranjang akan muncul disini -->
+    </div>
+    <div class="p-4 border-t flex justify-between items-center">
+      <span id="cart-total" class="font-bold text-red-600"></span>
+      <button class="bg-red-600 text-white px-6 py-2 rounded">Checkout</button>
+    </div>
+  </div>
+
+<script>
+  // Data produk
+  const products = [
+    { id: 1, name: "Paket Nasi + Ayam Geprek", price: 25000, category: "paket", img: "https://source.unsplash.com/400x300/?rice,chicken" },
+    { id: 2, name: "Paket Nasi + Ayam Sambal Matah", price: 30000, category: "paket", img: "https://source.unsplash.com/400x300/?chicken,rice" },
+    { id: 3, name: "Roti Bakar", price: 15000, category: "breakfast", img: "https://source.unsplash.com/400x300/?bread" },
+    { id: 4, name: "Burger Keju", price: 28000, category: "burgers", img: "https://source.unsplash.com/400x300/?burger" },
+    { id: 5, name: "Mie Goreng Spesial", price: 20000, category: "alacarte", img: "https://source.unsplash.com/400x300/?noodles" }
+  ];
+
+  let cart = [];
+
+  // Render produk
+  function renderProducts(category = "all") {
+    const container = document.getElementById("product-container");
+    container.classList.add("opacity-0");
+
+    setTimeout(() => {
+      container.innerHTML = "";
+      const filtered = category === "all" ? products : products.filter(p => p.category === category);
+
+      filtered.forEach(p => {
+        const card = document.createElement("div");
+        card.className = "bg-white rounded-xl shadow p-3 flex flex-col transform transition duration-300 hover:scale-105 opacity-0 translate-y-3";
+
+        card.innerHTML = `
+          <img src="${p.img}" alt="${p.name}" class="rounded-lg mb-2 h-40 w-full object-cover">
+          <h2 class="font-semibold text-gray-700 text-sm sm:text-base">${p.name}</h2>
+          <p class="text-red-600 font-bold mb-2">Rp ${p.price.toLocaleString()}</p>
+          <button class="border border-red-600 text-red-600 rounded py-1 hover:bg-red-600 hover:text-white transition"
+            onclick="addToCart(${p.id})">Tambah</button>
+        `;
+        container.appendChild(card);
+
+        setTimeout(() => {
+          card.classList.remove("opacity-0","translate-y-3");
+          card.classList.add("opacity-100","translate-y-0");
+        }, 100);
+      });
+
+      setTimeout(() => container.classList.remove("opacity-0"), 100);
+    }, 200);
+  }
+
+  // Tambah ke keranjang
+  function addToCart(id) {
+    const product = products.find(p => p.id === id);
+    const found = cart.find(item => item.id === id);
+    if (found) {
+      found.qty++;
+    } else {
+      cart.push({ ...product, qty: 1 });
+    }
+    updateCart();
+  }
+
+  // Kurangi dari keranjang
+  function decreaseQty(id) {
+    const found = cart.find(item => item.id === id);
+    if (found) {
+      found.qty--;
+      if (found.qty <= 0) {
+        cart = cart.filter(item => item.id !== id);
+      }
+    }
+    updateCart();
+  }
+
+  // Update keranjang
+  function updateCart() {
+    const cartBox = document.getElementById("cart");
+    const cartInfo = document.getElementById("cart-info");
+    const cartDetail = document.getElementById("cart-detail");
+    const cartItems = document.getElementById("cart-items");
+    const cartTotal = document.getElementById("cart-total");
+
+    if (cart.length === 0) {
+      cartBox.classList.add("translate-y-full");
+      cartDetail.classList.add("translate-y-full");
+    } else {
+      cartBox.classList.remove("translate-y-full");
+
+      const total = cart.reduce((sum, item) => sum + (item.price * item.qty), 0);
+      cartInfo.textContent = `${cart.reduce((sum, item) => sum + item.qty, 0)} Item • Rp ${total.toLocaleString()}`;
+      cartTotal.textContent = `Total: Rp ${total.toLocaleString()}`;
+
+      // render detail
+      cartItems.innerHTML = "";
+      cart.forEach(item => {
+        const row = document.createElement("div");
+        row.className = "flex justify-between items-center bg-gray-50 p-2 rounded-lg";
+        row.innerHTML = `
+          <div class="flex items-center space-x-3">
+            <img src="${item.img}" class="w-12 h-12 rounded object-cover">
+            <div>
+              <p class="font-semibold text-sm">${item.name}</p>
+              <p class="text-red-600 text-sm">Rp ${(item.price * item.qty).toLocaleString()}</p>
+            </div>
+          </div>
+          <div class="flex items-center space-x-2">
+            <button onclick="decreaseQty(${item.id})" class="px-2 py-1 bg-gray-200 rounded">-</button>
+            <span>${item.qty}</span>
+            <button onclick="addToCart(${item.id})" class="px-2 py-1 bg-gray-200 rounded">+</button>
+          </div>
+        `;
+        cartItems.appendChild(row);
+      });
+    }
+  }
+
+  // Toggle detail keranjang
+  function toggleCartDetail() {
+    const cartDetail = document.getElementById("cart-detail");
+    cartDetail.classList.toggle("translate-y-full");
+  }
+
+  // Event kategori
+  document.querySelectorAll(".category-btn").forEach(btn => {
+    btn.addEventListener("click", function() {
+      document.querySelectorAll(".category-btn").forEach(b => b.classList.remove("bg-red-600","text-white"));
+      this.classList.add("bg-red-600","text-white");
+      renderProducts(this.dataset.category);
+    });
+  });
+
+  // Event klik bar keranjang
+  document.getElementById("cart").addEventListener("click", toggleCartDetail);
+
+  // Load awal
+  renderProducts();
+</script>
+</body>
+</html>
