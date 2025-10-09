@@ -14,8 +14,14 @@ class CreateProductStockTable extends Migration
     public function up()
     {
         Schema::create('product_stock', function (Blueprint $table) {
-            $table->foreignId('product_id')->constrained('products')->onDelete('cascade');
-            $table->foreignId('stock_id')->constrained('stocks')->onDelete('cascade');
+
+            // $table->foreignId('product_id')->constrained('products')->onDelete('cascade');
+            // $table->foreignId('stock_id')->constrained('stocks')->onDelete('cascade');
+            $table->unsignedBigInteger('product_id')->nullable();
+            $table->foreign('product_id')->references('id')->on('products')->onDelete('set null');
+            $table->unsignedBigInteger('stock_id')->nullable();
+            $table->foreign('stock_id')->references('id')->on('stocks')->onDelete('set null');
+            $table->integer('quantity')->nullable();
         });
     }
 

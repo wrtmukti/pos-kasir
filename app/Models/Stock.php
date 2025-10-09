@@ -12,12 +12,14 @@ class Stock extends Model
     protected $fillable = [
         'name',
         'type',
+        'unit',
+        'counted',
         'amount',
     ];
 
     public function products()
     {
-        return $this->belongsToMany(Product::class);
+        return $this->belongsToMany(Product::class)->withPivot('quantity');
     }
 
     // public function outlet()

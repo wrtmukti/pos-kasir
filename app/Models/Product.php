@@ -10,18 +10,19 @@ class Product extends Model
     use HasFactory;
 
     protected $fillable = [
-        'sku',
+        'code',
         'name',
         'image',
         'price',
         'status',
         'type',
+        'description',
         'category_id',
     ];
 
     public function stocks()
     {
-        return $this->belongsToMany(Stock::class);
+        return $this->belongsToMany(Stock::class)->withPivot('quantity');
     }
     public function category()
     {
@@ -29,7 +30,7 @@ class Product extends Model
     }
     public function orders()
     {
-        return $this->belongsToMany(Order::class)->withPivot('quantity');
+        return $this->belongsToMany(Order::class)->withPivot('quantity', 'note');
     }
 
     // public function outlet()

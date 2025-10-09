@@ -86,7 +86,7 @@ class ProductController extends Controller
     {
         // dd($request);
         $request->validate([
-            'sku' => 'required|string|max:255',
+            'code' => 'required|string|max:255',
             'name' => 'required|string|max:255',
             'price' => 'required',
             'status' => 'required',
@@ -102,7 +102,11 @@ class ProductController extends Controller
         }
 
         $product = Product::create($input);
-        $product->stocks()->attach($request->stock_id);
+        $stockData = [];
+        foreach ($request->stocks as $stock) {
+            $stockData[$stock['id']] = ['quantity' => $stock['quantity']];
+        }
+        $product->stocks()->attach($stockData);
 
         if ($request->type == 0) {
             return redirect()->to('/admin/product/food')->with('success', 'Produk baru berhasil ditambahkan :)');

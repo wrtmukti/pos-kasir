@@ -42,6 +42,8 @@ class StockController extends Controller
             'name' => 'required|string|max:255',
             'type' => 'required',
             'amount' => 'required',
+            'unit' => 'required',
+            'counted' => 'required',
             // 'image' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
         ]);
 
@@ -49,10 +51,12 @@ class StockController extends Controller
             'name' => $request->name,
             'type' => $request->type,
             'amount' => $request->amount,
+            'unit' => $request->unit,
+            'counted' => $request->counted,
 
         ]);
 
-        return redirect()->to('/admin/stock')->with('success', 'Item baru berhasil ditambahkan :)');
+        return redirect()->to('/admin/stock')->with('success', 'Stok baru berhasil ditambahkan :)');
     }
 
     /**

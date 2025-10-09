@@ -18,13 +18,13 @@ class CreateOrdersTable extends Migration
             $table->integer('type');
             $table->integer('status');
             $table->integer('price');
-            $table->text('note')->nullable();
+            // $table->text('note')->nullable();
             $table->timestamps();
 
             $table->unsignedBigInteger('transaction_id')->nullable();
-            $table->foreign('transaction_id')->references('id')->on('transactions')->onDelete('cascade');
+            $table->foreign('transaction_id')->references('id')->on('transactions')->onDelete('set null');
             $table->unsignedBigInteger('customer_id')->nullable();
-            $table->foreign('customer_id')->references('id')->on('customers')->onDelete('cascade');
+            $table->foreign('customer_id')->references('id')->on('customers')->onDelete('set null');
         });
     }
 

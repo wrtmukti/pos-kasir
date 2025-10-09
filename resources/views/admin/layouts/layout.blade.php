@@ -26,6 +26,8 @@
   <link rel="stylesheet" href="{{ asset('vendor/star-admin/template/js/select.dataTables.min.css') }}">
   <link rel="stylesheet" href="{{ asset('css/admin.css') }}">
   <link rel="stylesheet" href="{{ asset('css/tabslider.css') }}">
+  <link rel="stylesheet" href="https://cdn.datatables.net/1.12.1/css/dataTables.bootstrap4.min.css">
+
   
   <!-- End plugin css for this page -->
   <!-- inject:css -->
@@ -301,6 +303,9 @@
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/js/bootstrap.bundle.min.js" integrity="sha384-gtEjrD/SeCtmISkJkNUaaKMoLD0//ElJ19smozuHV6z3Iehds+3Ulb9Bn9Plx0x4" crossorigin="anonymous"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.14.0-beta2/js/bootstrap-select.min.js" integrity="sha512-FHZVRMUW9FsXobt+ONiix6Z0tIkxvQfxtCSirkKc5Sb4TKHmqq1dZa8DphF0XqKb3ldLu/wgMa8mT6uXiLlRlw==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
   <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.12.1/js/jquery.dataTables.js"></script>
+  <script src="https://cdn.datatables.net/1.12.1/js/jquery.dataTables.min.js"></script>
+  <script src="https://cdn.datatables.net/1.12.1/js/dataTables.bootstrap4.min.js"></script>
+  
   {{-- <script src="{{ asset('vendor/star-admin/template/vendors/js/vendor.bundle.base.js') }}"></script> --}}
   <!-- endinject -->
  

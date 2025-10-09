@@ -31,9 +31,9 @@
           @enderror
         </div>
         <div class="form-group">
-          <label for="sku">SKU</label>
-          <input id="sku" type="text" class="form-control @error('sku') is-invalid @enderror" name="sku" value="{{ old('sku') }}" required autocomplete="sku" autofocus>
-          @error('sku')
+          <label for="code">Kode Produk</label>
+          <input id="code" type="text" class="form-control @error('code') is-invalid @enderror" name="code" value="{{ old('code') }}" required autocomplete="code" autofocus>
+          @error('code')
               <span class="invalid-feedback" role="alert">
                   <strong>{{ $message }}</strong>
               </span>
@@ -74,12 +74,33 @@
           <input type="file" name="image" class="form-control" placeholder="image">
         </div>
         <div class="form-group">
-          <label for="">Stok</label>
-          <select name="stock_id[]" class="selectpicker " multiple aria-label="size 3 select example" id="exampleFormControlSelect1" style="overflow: auto">
-            @foreach ($stocks as $stock)
-              <option value="{{ $stock->id }}" style="position: relative;z-index: 1000000; ">{{ $stock->name }}</option>
-            @endforeach
-          </select>          
+          <label for="description">Deskripsi Produk</label>
+          <input id="description" type="textarea" class="form-control @error('description') is-invalid @enderror" name="description" value="{{ old('description') }}"  autocomplete="description" autofocus>
+          @error('description')
+              <span class="invalid-feedback" role="alert">
+                  <strong>{{ $message }}</strong>
+              </span>
+          @enderror
+        </div>
+        <div class="form-group">
+          <label for="">Stok dan Jumlah</label>
+
+          <div id="stock-wrapper">
+            <div class="stock-row d-flex align-items-center mb-2">
+              <select name="stocks[0][id]" class="form-control me-2" style="width: 50%;" required>
+                <option value="">-- Pilih Stok --</option>
+                @foreach ($stocks as $stock)
+                  <option value="{{ $stock->id }}">{{ $stock->name }}</option>
+                @endforeach
+              </select>
+
+              <input type="number" name="stocks[0][quantity]" class="form-control me-2" placeholder="Jumlah" min="1" style="width: 30%;" required>
+
+              <button type="button" class="btn btn-danger btn-sm remove-stock">Hapus</button>
+            </div>
+          </div>
+
+          <button type="button" class="btn btn-primary btn-sm mt-2" id="add-stock">+ Tambah Stok</button>
         </div>
         
         <button type="submit" class="btn btn-primary">Submit</button>
@@ -87,5 +108,39 @@
     </div>
   </div>
 </div>
+
+<script>
+  let stockIndex = 1;
+
+  // Tambah baris stok baru
+  document.getElementById('add-stock').addEventListener('click', function () {
+    const wrapper = document.getElementById('stock-wrapper');
+    const newRow = document.createElement('div');
+    newRow.classList.add('stock-row', 'd-flex', 'align-items-center', 'mb-2');
+
+    newRow.innerHTML = `
+      <select name="stocks[${stockIndex}][id]" class="form-control me-2" style="width: 50%;" required>
+        <option value="">-- Pilih Stok --</option>
+        @foreach ($stocks as $stock)
+          <option value="{{ $stock->id }}">{{ $stock->name }}</option>
+        @endforeach
+      </select>
+
+      <input type="number" name="stocks[${stockIndex}][quantity]" class="form-control me-2" placeholder="Jumlah" min="1" style="width: 30%;" required>
+
+      <button type="button" class="btn btn-danger btn-sm remove-stock">Hapus</button>
+    `;
+
+    wrapper.appendChild(newRow);
+    stockIndex++;
+  });
+
+  // Hapus baris stok
+  document.addEventListener('click', function (e) {
+    if (e.target && e.target.classList.contains('remove-stock')) {
+      e.target.closest('.stock-row').remove();
+    }
+  });
+</script>
 
 @endsection

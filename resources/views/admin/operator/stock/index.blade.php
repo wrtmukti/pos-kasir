@@ -39,10 +39,12 @@
                 <thead>
                   <tr>
                     {{-- <th class="text-center" style="width: 60%;"><h5 class=" fw-bold">No</h5></th> --}}
-                    <th class="text-center" style="width: 40%;"><h5 class=" fw-bold">Nama Stok</h5></th>
-                    <th class="text-center"><h5 class=" fw-bold"> jumlah</h5></th>
+                    <th class="text-center" ><h5 class=" fw-bold">Nama Stok</h5></th>
+                    <th class="text-center d-none d-sm-table-cell"><h5 class="fw-bold"> Tipe</h5></th>
+                    <th class="text-center"><h5> Stok Tersisa</h5></th>
+                    <th class="text-center d-none d-sm-table-cell"><h5 class="fw-bold"> Hitung Otomatis</h5></th>
                     @if (Auth::user()->role == 1)
-                    <th class="text-center"><h5 class=" fw-bold"> Aksi</h5></th>
+                    <th class="text-center d-none d-sm-table-cell"><h5 class="fw-bold"> Aksi</h5></th>
                     @endif
                   </tr>
                 </thead>
@@ -54,19 +56,54 @@
                     <td class="">
                       <a  class="nav-link  text-dark">{{ $data->name }}</a>
                     </td>
+                    <td class="text-center d-none d-sm-table-cell">
+                      <a  class="nav-link  text-dark">
+                        @if ($data->type == 0)
+                            Makanan
+                        @elseif ($data->type == 1)
+                            Minuman
+                        @endif
+                      </a>
+                    </td>
                     <td class="text-center">
-                      <a  class="nav-link  text-dark">{{ $data->amount }} pcs</a>
+                      <a  class="nav-link  text-dark">{{ $data->amount }} 
+                        @switch($data->unit)
+                            @case(0)
+                                
+                                @break
+                            @case(1)
+                                Pcs
+                                @break
+                            @case(2)
+                                Pack
+                                @break
+                            @case(3)
+                                Gr
+                                @break
+                            @default
+                                
+                        @endswitch
+                      </a>
                       @if (Auth::user()->role == 1)
-                      <a href="/admin/operator/stock/edit/{{ $data->id }}" class="btn btn-primary" >Tambah</a>
+                      <a href="/admin/operator/stock/edit/{{ $data->id }}" class="btn btn-primary">Tambah</a>
                       @endif
                     </td>
+                    <td class="text-center d-none d-sm-table-cell">
+                      <a  class="nav-link  text-dark">
+                        @if ($data->counted == 0)
+                            Tidak
+                        @elseif ($data->counted == 1)
+                            Ya
+                        @endif
+                      </a>
+                    </td>
                     @if (Auth::user()->role == 1)
-                    <td>
+                    <td class="text-center d-none d-sm-table-cell">
                       <form action="/admin/operator/stock/delete/{{$data->id}}" method="post" style="text-decoration: none">
                         @csrf
                         @method('DELETE')
                         <input type="hidden" name="{{$data->id}}" value="DELETE">
-                        <button type="sumbit" class="btn btn-danger text-center " onclick="return confirm('Yakin ingin menghapus produk?');">
+                        <button type="sumbit" class="btn btn-danger" onclick="return confirm('Yakin ingin menghapus produk?');">
                           Hapus</i>
                         </button>
                       </form> 

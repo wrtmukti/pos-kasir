@@ -202,12 +202,18 @@
     .list-view .card-body button {
       align-self: flex-end;
     }
+    .sticky-top {
+      position: sticky;
+      top: 0;
+      z-index: 1030; /* biar di atas konten lain */
+      background: #fff;
+    }
   </style>
 </head>
 <body>
 
   <!-- Navbar -->
-  <nav class="navbar navbar-light bg-white shadow-sm">
+  <nav class="navbar navbar-light bg-white shadow-sm sticky-top">
     <div class="container d-flex justify-content-between">
       <span class="navbar-brand">Test Cafe</span>
       <div>
@@ -273,7 +279,7 @@
   </div>
 
   <!-- Search bar -->
-  <div class="container mt-3">
+  <div class="container mt-3 sticky-top" style="top:57px;">
     <div class="input-group shadow-sm">
       <div class="input-group-prepend">
         <span class="input-group-text bg-white"><i class="fas fa-search"></i></span>
@@ -283,7 +289,7 @@
   </div>
 
   <!-- Kategori -->
-  <div class="container mt-3">
+  <div class="container mt-3 sticky-top" style="top:95px;">
     <div class="category-bar bg-white shadow-sm">
       <button class="btn btn-danger btn-sm category-btn" data-category="all">Semua Menu</button>
       <button class="btn btn-outline-secondary btn-sm category-btn" data-category="paket">Paket Spesial</button>
@@ -305,23 +311,32 @@
   </div>
 
   <!-- Bar Keranjang -->
-  <div id="cart">
-    <span id="cart-info" class="font-weight-bold text-danger"></span>
-    <button class="btn btn-danger btn-sm">Checkout</button>
-  </div>
+  <form id="checkoutForm" action="/orders" method="POST">
+    @csrf
+    <input type="hidden" name="cart_data" id="cartData">
+    <input type="hidden" name="total_price" id="totalPrice">
 
-  <!-- Overlay Detail Keranjang -->
-  <div id="cart-detail">
-    <div class="p-3 border-bottom d-flex justify-content-between align-items-center">
-      <h5 class="mb-0 font-weight-bold">Keranjang Saya</h5>
-      <button class="close" onclick="toggleCartDetail()">×</button>
+    <div id="cart">
+      <span id="cart-info" class="font-weight-bold text-danger"></span>
+      <button type="submit" class="btn btn-danger btn-sm">Checkout</button>
     </div>
-    <div id="cart-items" class="cart-items p-3"></div>
-    <div class="p-3 border-top d-flex justify-content-between align-items-center">
-      <span id="cart-total" class="font-weight-bold text-danger"></span>
-      <button class="btn btn-danger">Checkout</button>
+
+    <!-- Overlay Detail Keranjang -->
+    <div id="cart-detail">
+      <div class="p-3 border-bottom d-flex justify-content-between align-items-center">
+        <h5 class="mb-0 font-weight-bold">Keranjang Saya</h5>
+        <button type="button" class="close" onclick="toggleCartDetail()">×</button>
+      </div>
+
+      <div id="cart-items" class="cart-items p-3"></div>
+
+      <div class="p-3 border-top d-flex justify-content-between align-items-center">
+        <span id="cart-total" class="font-weight-bold text-danger"></span>
+        <button type="submit" class="btn btn-danger">Checkout</button>
+      </div>
     </div>
-  </div>
+  </form>
+
 
   <script>
     const products = [
@@ -444,17 +459,30 @@
       const cartDetail = document.getElementById("cart-detail");
       const cartItems = document.getElementById("cart-items");
       const cartTotal = document.getElementById("cart-total");
+      const checkoutForm = document.getElementById("checkoutForm");
+      const cartDataInput = document.getElementById("cartData");
+      const totalPriceInput = document.getElementById("totalPrice");
 
       if (cart.length === 0) {
         cartBox.classList.remove("show");
         cartDetail.classList.remove("show");
+        checkoutForm.style.display = "none";
       } else {
         cartBox.classList.add("show");
+        checkoutForm.style.display = "block";
 
         const total = cart.reduce((sum, item) => sum + (item.price * item.qty), 0);
         cartInfo.textContent = `${cart.reduce((sum, item) => sum + item.qty, 0)} Item • Rp ${total.toLocaleString()}`;
         cartTotal.textContent = `Total: Rp ${total.toLocaleString()}`;
 
+        // 🧩 Kirim data ke hidden form (tanpa price)
+        cartDataInput.value = JSON.stringify(cart.map(item => ({
+          product_id: item.id,
+          qty: item.qty
+        })));
+        totalPriceInput.value = total;
+
+        // 🧱 Render ulang isi keranjang
         cartItems.innerHTML = "";
         cart.forEach(item => {
           const row = document.createElement("div");
@@ -479,6 +507,7 @@
         });
       }
     }
+
 
     function toggleCartDetail() {
       document.getElementById("cart-detail").classList.toggle("show");
