@@ -4,8 +4,11 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 
 
-Route::get('/', [App\Http\Controllers\GuestController::class, 'index']);
+Route::get('/', [App\Http\Controllers\GuestController::class, 'index'])->name('home');;
 Route::post('/order/store', [App\Http\Controllers\GuestController::class, 'store']);
+Route::post('/orders', [App\Http\Controllers\GuestController::class, 'checkout']);
+Route::get('/checkout/review', [App\Http\Controllers\GuestController::class, 'review'])->name('checkout.review'); // halaman isi note & pembayaran
+Route::post('/submits', [App\Http\Controllers\GuestController::class, 'submit'])->name('checkout.submit'); // simpan ke DB
 Route::get('/order/status', [App\Http\Controllers\GuestController::class, 'status']);
 Route::get('/category/{id}', [App\Http\Controllers\GuestController::class, 'category']);
 Route::post('/search', [App\Http\Controllers\GuestController::class, 'search']);

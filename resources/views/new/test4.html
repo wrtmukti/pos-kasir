@@ -20,11 +20,37 @@
       line-height: 1.6;
     }
 
+    /* Warna tema coklat */
+    .btn-brown {
+      background-color: #8B5E3C;
+      color: #fff;
+      border: none;
+    }
+    .btn-brown:hover {
+      background-color: #71492E;
+      color: #fff;
+    }
+    .btn-outline-brown {
+      color: #8B5E3C;
+      border: 1px solid #C19A6B;
+    }
+    .btn-outline-brown:hover {
+      background-color: #8B5E3C;
+      color: #fff;
+    }
+    .text-brown {
+      color: #8B5E3C !important;
+    }
+    .bg-brown {
+      background-color: #8B5E3C !important;
+    }
+
     /* Navbar */
     .navbar-brand {
       font-weight: 600;
       font-size: 1.3rem;
       letter-spacing: -0.3px;
+      color: #8B5E3C !important;
     }
 
     .offcanvas-menu {
@@ -122,6 +148,7 @@
     #toggleView {
       border-radius: 50%;
       box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+      color: #8B5E3C;
     }
 
     /* Cart bar */
@@ -205,7 +232,7 @@
     .sticky-top {
       position: sticky;
       top: 0;
-      z-index: 1030; /* biar di atas konten lain */
+      z-index: 1030;
       background: #fff;
     }
   </style>
@@ -217,8 +244,8 @@
     <div class="container d-flex justify-content-between">
       <span class="navbar-brand">Test Cafe</span>
       <div>
-        <i class="fas fa-search mr-3"></i>
-        <i class="fas fa-bars" id="menuToggle"></i>
+        <i class="fas fa-search mr-3 text-brown"></i>
+        <i class="fas fa-bars text-brown" id="menuToggle"></i>
       </div>
     </div>
   </nav>
@@ -226,19 +253,19 @@
   <!-- Offcanvas menu -->
   <div id="offcanvasMenu" class="offcanvas-menu">
     <button class="close mb-3" id="closeMenu">&times;</button>
-    <h6 class="font-weight-bold">Menu</h6>
+    <h6 class="font-weight-bold text-brown">Menu</h6>
     <ul class="list-unstyled mt-3">
-      <li><a href="#" class="d-block py-2">Beranda</a></li>
-      <li><a href="#" class="d-block py-2">Promo</a></li>
-      <li><a href="#" class="d-block py-2">Reservasi</a></li>
-      <li><a href="#" class="d-block py-2">Kontak</a></li>
+      <li><a href="#" class="d-block py-2 text-brown">Beranda</a></li>
+      <li><a href="#" class="d-block py-2 text-brown">Promo</a></li>
+      <li><a href="#" class="d-block py-2 text-brown">Reservasi</a></li>
+      <li><a href="#" class="d-block py-2 text-brown">Kontak</a></li>
     </ul>
   </div>
 
   <!-- Tanggal -->
   <div class="container mt-3">
     <div class="d-flex align-items-center bg-white p-2 rounded shadow-sm">
-      <i class="far fa-calendar-alt mr-2 text-muted"></i>
+      <i class="far fa-calendar-alt mr-2 text-brown"></i>
       <span id="today"></span>
     </div>
   </div>
@@ -274,7 +301,7 @@
       <div>
         <small id="openStatus" class="text-success font-weight-bold">Buka, 24 Jam</small>
       </div>
-      <button class="btn btn-success btn-sm">Reservasi <i class="fas fa-arrow-right ml-1"></i></button>
+      <button class="btn btn-brown btn-sm">Reservasi <i class="fas fa-arrow-right ml-1"></i></button>
     </div>
   </div>
 
@@ -282,7 +309,7 @@
   <div class="container mt-3 sticky-top" style="top:57px;">
     <div class="input-group shadow-sm">
       <div class="input-group-prepend">
-        <span class="input-group-text bg-white"><i class="fas fa-search"></i></span>
+        <span class="input-group-text bg-white text-brown"><i class="fas fa-search"></i></span>
       </div>
       <input type="text" id="search" class="form-control" placeholder="Cari Makanan...">
     </div>
@@ -291,17 +318,17 @@
   <!-- Kategori -->
   <div class="container mt-3 sticky-top" style="top:95px;">
     <div class="category-bar bg-white shadow-sm">
-      <button class="btn btn-danger btn-sm category-btn" data-category="all">Semua Menu</button>
-      <button class="btn btn-outline-secondary btn-sm category-btn" data-category="paket">Paket Spesial</button>
-      <button class="btn btn-outline-secondary btn-sm category-btn" data-category="breakfast">Breakfast</button>
-      <button class="btn btn-outline-secondary btn-sm category-btn" data-category="burgers">Burgers</button>
-      <button class="btn btn-outline-secondary btn-sm category-btn" data-category="alacarte">Ala Carte</button>
+      <button class="btn btn-brown btn-sm category-btn" data-category="all">Semua Menu</button>
+      <button class="btn btn-outline-brown btn-sm category-btn" data-category="paket">Paket Spesial</button>
+      <button class="btn btn-outline-brown btn-sm category-btn" data-category="breakfast">Breakfast</button>
+      <button class="btn btn-outline-brown btn-sm category-btn" data-category="burgers">Burgers</button>
+      <button class="btn btn-outline-brown btn-sm category-btn" data-category="alacarte">Ala Carte</button>
     </div>
   </div>
 
   <!-- Header Produk -->
   <div class="container mt-3 d-flex justify-content-between align-items-center">
-    <h5 id="category-title" class="mb-0 font-weight-bold">Semua Produk</h5>
+    <h5 id="category-title" class="mb-0 font-weight-bold text-brown">Semua Produk</h5>
     <button class="btn btn-light btn-sm" id="toggleView"><i class="fas fa-th-large"></i></button>
   </div>
 
@@ -317,22 +344,22 @@
     <input type="hidden" name="total_price" id="totalPrice">
 
     <div id="cart">
-      <span id="cart-info" class="font-weight-bold text-danger"></span>
-      <button type="submit" class="btn btn-danger btn-sm">Checkout</button>
+      <span id="cart-info" class="font-weight-bold text-brown"></span>
+      <button type="submit" class="btn btn-brown btn-sm">Checkout</button>
     </div>
 
     <!-- Overlay Detail Keranjang -->
     <div id="cart-detail">
       <div class="p-3 border-bottom d-flex justify-content-between align-items-center">
-        <h5 class="mb-0 font-weight-bold">Keranjang Saya</h5>
+        <h5 class="mb-0 font-weight-bold text-brown">Keranjang Saya</h5>
         <button type="button" class="close" onclick="toggleCartDetail()">×</button>
       </div>
 
       <div id="cart-items" class="cart-items p-3"></div>
 
       <div class="p-3 border-top d-flex justify-content-between align-items-center">
-        <span id="cart-total" class="font-weight-bold text-danger"></span>
-        <button type="submit" class="btn btn-danger">Checkout</button>
+        <span id="cart-total" class="font-weight-bold text-brown"></span>
+        <button type="submit" class="btn btn-brown">Checkout</button>
       </div>
     </div>
   </form>
@@ -350,7 +377,7 @@
     let cart = [];
     let listView = false;
 
-    // Set tanggal hari ini
+    // Tanggal hari ini
     const today = new Date();
     const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
     document.getElementById("today").textContent = today.toLocaleDateString("id-ID", options);
@@ -361,7 +388,7 @@
 
       let filtered;
 
-      // Jika ada pencarian → selalu cari di semua produk
+      // Jika ada pencarian → cari di semua produk
       if (searchTerm) {
         filtered = products.filter(p =>
           p.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -369,10 +396,9 @@
         );
         document.getElementById("category-title").textContent = "Hasil Pencarian";
       } else {
-        // Kalau tidak sedang search → filter sesuai kategori
+        // Kalau tidak sedang search → filter kategori
         filtered = category === "all" ? products : products.filter(p => p.category === category);
 
-        // Ubah judul header sesuai kategori
         const categoryTitle = document.getElementById("category-title");
         if (category === "all") categoryTitle.textContent = "Semua Produk";
         else if (category === "paket") categoryTitle.textContent = "Paket Spesial";
@@ -390,13 +416,13 @@
         const col = document.createElement("div");
         col.className = "col-6 col-md-4 col-lg-3 mb-3 product-item";
         col.innerHTML = `
-          <div class="card h-100">
+          <div class="card h-100 shadow-sm">
             <img src="${p.img}" class="card-img-top" alt="${p.name}" style="height:150px;object-fit:cover;">
             <div class="card-body d-flex flex-column">
               <h6 class="card-title">${p.name}</h6>
               <small class="text-muted">${p.description}</small>
-              <p class="text-danger font-weight-bold mt-1">Rp ${p.price.toLocaleString()}</p>
-              <button class="btn btn-danger btn-sm mt-auto" onclick="addToCart(${p.id})">Tambah</button>
+              <p class="text-brown font-weight-bold mt-1">Rp ${p.price.toLocaleString()}</p>
+              <button class="btn btn-brown btn-sm mt-auto" onclick="addToCart(${p.id})">Tambah</button>
             </div>
           </div>
         `;
@@ -418,7 +444,7 @@
       } else {
         document.getElementById("toggleView").innerHTML = '<i class="fas fa-th-large"></i>';
         document.getElementById("product-container").classList.remove("list-view");
-        renderProducts(document.querySelector(".category-btn.btn-danger").dataset.category, document.getElementById("search").value);
+        renderProducts(document.querySelector(".category-btn.btn-brown").dataset.category, document.getElementById("search").value);
       }
     });
 
@@ -475,14 +501,14 @@
         cartInfo.textContent = `${cart.reduce((sum, item) => sum + item.qty, 0)} Item • Rp ${total.toLocaleString()}`;
         cartTotal.textContent = `Total: Rp ${total.toLocaleString()}`;
 
-        // 🧩 Kirim data ke hidden form (tanpa price)
+        // Data untuk form (tanpa price)
         cartDataInput.value = JSON.stringify(cart.map(item => ({
           product_id: item.id,
           qty: item.qty
         })));
         totalPriceInput.value = total;
 
-        // 🧱 Render ulang isi keranjang
+        // Render ulang isi keranjang
         cartItems.innerHTML = "";
         cart.forEach(item => {
           const row = document.createElement("div");
@@ -492,7 +518,7 @@
               <img src="${item.img}" class="rounded mr-2" style="width:50px;height:50px;object-fit:cover;">
               <div>
                 <div class="font-weight-bold small">${item.name}</div>
-                <div class="text-danger small">Rp ${(item.price * item.qty).toLocaleString()}</div>
+                <div class="text-brown small">Rp ${(item.price * item.qty).toLocaleString()}</div>
               </div>
             </div>
             <div class="d-flex align-items-center ml-auto">
@@ -508,25 +534,24 @@
       }
     }
 
-
     function toggleCartDetail() {
       document.getElementById("cart-detail").classList.toggle("show");
     }
 
-    // Search event → sekarang global search
+    // Search global
     document.getElementById("search").addEventListener("input", (e) => {
       const searchTerm = e.target.value;
-      const activeCategory = document.querySelector(".category-btn.btn-danger").dataset.category;
+      const activeCategory = document.querySelector(".category-btn.btn-brown").dataset.category;
       renderProducts(activeCategory, searchTerm);
     });
 
-    // Event kategori tetap ada
+    // Event kategori
     document.querySelectorAll(".category-btn").forEach(btn => {
       btn.addEventListener("click", function() {
-        document.querySelectorAll(".category-btn").forEach(b => b.classList.remove("btn-danger","text-white"));
+        document.querySelectorAll(".category-btn").forEach(b => b.classList.remove("btn-brown","text-white"));
         document.querySelectorAll(".category-btn").forEach(b => b.classList.add("btn-outline-secondary"));
         this.classList.remove("btn-outline-secondary");
-        this.classList.add("btn-danger","text-white");
+        this.classList.add("btn-brown","text-white");
         renderProducts(this.dataset.category, document.getElementById("search").value);
       });
     });
@@ -535,6 +560,7 @@
 
     renderProducts();
   </script>
+
 
 
   <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>

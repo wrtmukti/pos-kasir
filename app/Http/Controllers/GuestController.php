@@ -16,6 +16,13 @@ class GuestController extends Controller
 
     public function index()
     {
+        $products = Product::with('category')->get();
+        $food_categories = Category::where('category_type', '0')->get();
+        $drink_categories = Category::where('category_type', '1')->get();
+        return view('index', compact('products', 'food_categories', 'drink_categories'));
+    }
+    public function indexx()
+    {
         $products = Product::with(['orders' => function ($q) {
             $q->orderBy('pivot_quantity', 'asc');
         }])->take(3)->get();
@@ -23,6 +30,67 @@ class GuestController extends Controller
         $drink_categories = Category::where('category_type', '1')->get();
         return view('index', compact('products', 'food_categories', 'drink_categories'));
     }
+
+    // STEP 1: Terima data dari halaman index (keranjang)
+    public function checkout(Request $request)
+    {
+
+        // dd($request);
+        $cart = json_decode($request->cart_data, true);
+        $total_price = $request->total_price;
+
+        // Ambil produk dari database berdasarkan ID cart
+        $productIds = collect($cart)->pluck('product_id');
+        $products = Product::whereIn('id', $productIds)->get();
+
+        // Kirim ke halaman review
+        return view('review', compact('cart', 'products', 'total_price'));
+    }
+
+    // STEP 2: Render halaman isi note & pilih metode bayar
+    public function review()
+    {
+        // Biasanya tidak langsung diakses manual, tapi bisa untuk testing
+        return redirect()->route('home');
+    }
+
+    // STEP 3: Simpan order + pivot (quantity dan note)
+    public function submit(Request $request)
+    {
+        DB::beginTransaction();
+
+        try {
+            if (empty($request->products) || !is_array($request->products)) {
+                throw new \Exception('Tidak ada produk dalam pesanan.');
+            }
+
+            $order = Order::create([
+                'type' => 1,
+                'status' => 1,
+                'price' => $request->total_price,
+                'transaction_id' => null,
+                'customer_id' => null,
+            ]);
+
+            foreach ($request->products as $item) {
+                if (!isset($item['product_id']) || !isset($item['quantity'])) {
+                    throw new \Exception('Format data produk tidak valid.');
+                }
+
+                $order->products()->attach($item['product_id'], [
+                    'quantity' => $item['quantity'],
+                    'note' => $item['note'] ?? null,
+                ]);
+            }
+
+            DB::commit();
+            return redirect('/')->with('success', 'Pesanan berhasil dibuat!');
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return redirect('/')->with('error', $e->getMessage());
+        }
+    }
+
 
     public function search(Request $request)
     {
