@@ -39,7 +39,8 @@
     <button class="close mb-3" id="closeMenu">&times;</button>
     <h6 class="font-weight-bold text-brown">Menu</h6>
     <ul class="list-unstyled mt-3">
-      <li><a href="#" class="d-block py-2 text-brown">Beranda</a></li>
+      <li><a href="/" class="d-block py-2 text-brown">Beranda</a></li>
+      <li><a href="/orders/status" class="d-block py-2 text-brown">Status Order</a></li>
       <li><a href="#" class="d-block py-2 text-brown">Promo</a></li>
       <li><a href="#" class="d-block py-2 text-brown">Reservasi</a></li>
       <li><a href="#" class="d-block py-2 text-brown">Kontak</a></li>
@@ -64,13 +65,13 @@
       </ol>
       <div class="carousel-inner">
         <div class="carousel-item active">
-          <img src="img6.jpg" class="d-block w-100" alt="Cafe Image 1">
+          <img src="/images/website/img6.jpg" class="d-block w-100" alt="Cafe Image 1">
         </div>
         <div class="carousel-item">
-          <img src="img1.jpeg" class="d-block w-100" alt="Cafe Image 2">
+          <img src="/images/website/img6.jpg" class="d-block w-100" alt="Cafe Image 2">
         </div>
         <div class="carousel-item">
-          <img src="img3.jpg" class="d-block w-100" alt="Cafe Image 3">
+          <img src="/images/website/img6.jpg" class="d-block w-100" alt="Cafe Image 3">
         </div>
       </div>
       <a class="carousel-control-prev" href="#heroCarousel" role="button" data-slide="prev">
@@ -85,7 +86,7 @@
       <div>
         <small id="openStatus" class="text-success font-weight-bold">Buka, 24 Jam</small>
       </div>
-      <button class="btn btn-brown btn-sm">Reservasi <i class="fas fa-arrow-right ml-1"></i></button>
+      <button class="btn btn-success btn-sm">Reservasi <i class="fas fa-arrow-right ml-1"></i></button>
     </div>
   </div>
 

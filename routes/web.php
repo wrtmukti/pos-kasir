@@ -9,6 +9,7 @@ Route::post('/order/store', [App\Http\Controllers\GuestController::class, 'store
 Route::post('/orders', [App\Http\Controllers\GuestController::class, 'checkout']);
 Route::get('/checkout/review', [App\Http\Controllers\GuestController::class, 'review'])->name('checkout.review'); // halaman isi note & pembayaran
 Route::post('/submits', [App\Http\Controllers\GuestController::class, 'submit'])->name('checkout.submit'); // simpan ke DB
+Route::get('/orders/status', [App\Http\Controllers\GuestController::class, 'orderStatus'])->name('order.status');
 Route::get('/order/status', [App\Http\Controllers\GuestController::class, 'status']);
 Route::get('/category/{id}', [App\Http\Controllers\GuestController::class, 'category']);
 Route::post('/search', [App\Http\Controllers\GuestController::class, 'search']);
@@ -18,10 +19,8 @@ Auth::routes();
 
 Route::prefix('admin')->middleware('auth')->group(function () {
     Route::get('/', [App\Http\Controllers\AdminController::class, 'index']);
-
     Route::get('/table', [App\Http\Controllers\AdminController::class, 'table']);
     Route::put('/table/{id}', [App\Http\Controllers\AdminController::class, 'updateTable']);
-
     Route::get('/order/online', [App\Http\Controllers\OrderController::class, 'online']);
     Route::get('/order/manual', [App\Http\Controllers\OrderController::class, 'manual']);
     Route::get('/order/online/{id}', [App\Http\Controllers\OrderController::class, 'onlineShow']);

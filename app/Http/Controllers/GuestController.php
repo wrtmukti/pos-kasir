@@ -31,7 +31,6 @@ class GuestController extends Controller
         return view('index', compact('products', 'food_categories', 'drink_categories'));
     }
 
-    // STEP 1: Terima data dari halaman index (keranjang)
     public function checkout(Request $request)
     {
 
@@ -39,56 +38,90 @@ class GuestController extends Controller
         $cart = json_decode($request->cart_data, true);
         $total_price = $request->total_price;
 
-        // Ambil produk dari database berdasarkan ID cart
         $productIds = collect($cart)->pluck('product_id');
         $products = Product::whereIn('id', $productIds)->get();
+        $tables = Table::where('status', '1')->get();
 
-        // Kirim ke halaman review
-        return view('review', compact('cart', 'products', 'total_price'));
+        return view('review', compact('cart', 'products', 'total_price', 'tables'));
     }
 
-    // STEP 2: Render halaman isi note & pilih metode bayar
     public function review()
     {
-        // Biasanya tidak langsung diakses manual, tapi bisa untuk testing
         return redirect()->route('home');
     }
 
-    // STEP 3: Simpan order + pivot (quantity dan note)
     public function submit(Request $request)
     {
-        DB::beginTransaction();
 
-        try {
-            if (empty($request->products) || !is_array($request->products)) {
-                throw new \Exception('Tidak ada produk dalam pesanan.');
-            }
+        if ($request->no_table !== null) {
+            $table = Table::where('no_table', $request->no_table)->first();
+            if ($table->status == 1) {
 
-            $order = Order::create([
-                'type' => 1,
-                'status' => 1,
-                'price' => $request->total_price,
-                'transaction_id' => null,
-                'customer_id' => null,
-            ]);
+                $customers = Customer::where('no_table', $request->no_table)->whereHas('orders', function ($query) {
+                    $query->where('status', '<', '3');
+                })->first();
 
-            foreach ($request->products as $item) {
-                if (!isset($item['product_id']) || !isset($item['quantity'])) {
-                    throw new \Exception('Format data produk tidak valid.');
+                if ($customers !== null) {
+                    $customer_id = $customers->id;
+                } else {
+                    $customer = new Customer();
+                    $customer->no_table = $request->no_table;
+                    if ($request->has('customer_name')) {
+                        $customer->name = $request->customer_name;
+                    }
+                    if ($request->has('customer_whatsapp')) {
+                        $customer->whatsapp = $request->customer_whatsapp;
+                    }
+                    $customer->save();
+                    $customer_id = $customer->id;
                 }
 
-                $order->products()->attach($item['product_id'], [
-                    'quantity' => $item['quantity'],
-                    'note' => $item['note'] ?? null,
-                ]);
-            }
+                DB::beginTransaction();
 
-            DB::commit();
-            return redirect('/')->with('success', 'Pesanan berhasil dibuat!');
-        } catch (\Exception $e) {
-            DB::rollBack();
-            return redirect('/')->with('error', $e->getMessage());
+                try {
+                    if (empty($request->products) || !is_array($request->products)) {
+                        throw new \Exception('Tidak ada produk dalam pesanan.');
+                    }
+
+                    $order = Order::create([
+                        'type' => 1,
+                        'status' => 0,
+                        'price' => $request->total_price,
+                        'transaction_id' => null,
+                        'customer_id' => $customer_id,
+                    ]);
+
+                    foreach ($request->products as $item) {
+                        if (!isset($item['product_id']) || !isset($item['quantity'])) {
+                            throw new \Exception('Format data produk tidak valid.');
+                        }
+
+                        $order->products()->attach($item['product_id'], [
+                            'quantity' => $item['quantity'],
+                            'note' => $item['note'] ?? null,
+                        ]);
+                    }
+
+                    DB::commit();
+                    // return redirect('/')->with('success', 'Pesanan berhasil dibuat!');
+                    return redirect()->route('order.status')->with('success', 'Pesanan berhasil dibuat!');
+                } catch (\Exception $e) {
+                    DB::rollBack();
+                    return redirect('/')->with('error', $e->getMessage());
+                }
+            } else {
+                return redirect('/')->with('error', 'nomor meja');
+            }
+        } else {
+            return redirect()->to('/order/status')->with('danger', 'Maaf Kamu belum mengisi no meja');
         }
+    }
+
+    public function orderStatus()
+    {
+        $orders = Order::with('products')->orderBy('created_at', 'desc')->where('status', '!=', 3)->whereHas('customer')->get();
+
+        return view('status', compact('orders'));
     }
 
 

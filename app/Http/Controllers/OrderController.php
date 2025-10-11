@@ -121,7 +121,6 @@ class OrderController extends Controller
                 ]);
                 break;
 
-
             default:
                 # code...
                 break;

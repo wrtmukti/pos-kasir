@@ -4,7 +4,6 @@
 <div class="container py-3">
   <h5 class="font-weight-bold text-brown mb-3">Konfirmasi Pesanan</h5>
   
-
   <form action="/submits" method="POST">
     @csrf
     <input type="hidden" name="total_price" value="{{ $total_price }}">
@@ -36,6 +35,19 @@
 
     <div class="card show shadow-sm mb-3">
       <div class="card-body">
+        <h6 class="font-weight-bold text-brown mb-2">Meja</h6>
+        <div class="form-group">
+          <select name="no_table" class="form-control">
+            @foreach ($tables as $table)
+              <option value="{{ $table->id }}">{{ $table->no_table }}</option>
+            @endforeach
+          </select>
+        </div>
+      </div>
+    </div>
+
+    <div class="card show shadow-sm mb-3">
+      <div class="card-body">
         <h6 class="font-weight-bold text-brown mb-2">Metode Pembayaran</h6>
         <div class="form-group">
           <select name="payment_method" class="form-control">
@@ -44,10 +56,36 @@
             <option value="transfer">Transfer Bank</option>
           </select>
         </div>
+
+        {{-- PROMO SECTION --}}
+        <div class="mt-4">
+          <button type="button" id="togglePromo" class="btn btn-outline-brown btn-block">
+            🎁 Mau dapat info promo menarik?
+          </button>
+
+          <div id="promoForm" class="mt-3" style="display:none;">
+            <div class="form-group">
+              <label for="promo_name">Nama</label>
+              <input type="text" name="customer_name" id="promo_name" class="form-control" placeholder="Masukkan nama anda">
+            </div>
+            <div class="form-group mt-2">
+              <label for="promo_whatsapp">Nomor WhatsApp</label>
+              <input type="text" name="customer_whatsapp" id="promo_whatsapp" class="form-control" placeholder="Contoh: 081234567890">
+            </div>
+          </div>
+        </div>
       </div>
     </div>
 
-    <button type="submit" class="btn btn-brown btn-block shadow-sm">Konfirmasi Pesanan</button>
+    <button type="submit" class="btn btn-brown btn-block shadow-sm mt-3">Konfirmasi Pesanan</button>
   </form>
 </div>
+
+{{-- SCRIPT --}}
+<script>
+  document.getElementById('togglePromo').addEventListener('click', function() {
+    const form = document.getElementById('promoForm');
+    form.style.display = (form.style.display === 'none' || form.style.display === '') ? 'block' : 'none';
+  });
+</script>
 @endsection

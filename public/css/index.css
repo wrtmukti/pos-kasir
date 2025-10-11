@@ -222,3 +222,10 @@ body {
   z-index: 1030;
   background: #fff;
 }
+
+/* #promoForm.collapse.show {
+  transition: all 0.3s ease-in-out;
+}
+#promoForm {
+  transition: all 0.3s ease-in-out;
+} */
