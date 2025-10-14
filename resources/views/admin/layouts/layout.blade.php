@@ -5,7 +5,7 @@
   <!-- Required meta tags -->
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-  <title>Admin Kedai Papaji</title>
+  <title>Admin Bagaskara</title>
 
 
   <!-- plugins:css -->
@@ -238,7 +238,22 @@
 
           {{-- OPERATOR --}}
           @if (Auth::user()->role == 1)
-          <li class="nav-item nav-category">Operator</li>
+          <li class="nav-item nav-category">Diskon & Voucher</li>
+          <li class="nav-item">
+            <a class="nav-link" data-bs-toggle="collapse" href="#disc" aria-expanded="false" aria-controls="disc">
+              <i class="menu-icon mdi  mdi mdi-shopping  "></i>
+              <span class="menu-title">Diskon & Voucher</span>
+              <i class="menu-arrow"></i> 
+            </a>
+            <div class="collapse" id="disc">
+              <ul class="nav flex-column sub-menu">
+                <li class="nav-item"> <a class="nav-link" href="/admin/operator/discount">Discount</a></li>
+                <li class="nav-item"> <a class="nav-link" href="/admin/operator/voucher">Voucher</a></li>
+              </ul>
+            </div>
+          </li>
+
+          <li class="nav-item nav-category">Laporan</li>
           <li class="nav-item">
             <a class="nav-link" data-bs-toggle="collapse" href="#operator" aria-expanded="false" aria-controls="operator">
               <i class="menu-icon mdi  mdi mdi-shopping  "></i>
@@ -253,8 +268,6 @@
               </ul>
             </div>
           </li>
-
-
           @endif
           {{-- OPERATOR --}}
           

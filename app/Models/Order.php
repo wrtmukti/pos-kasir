@@ -12,15 +12,21 @@ class Order extends Model
     protected $fillable = [
         'type',
         'status',
+        'price',
+        'note',
         'customer_id',
         'transaction_id',
-        'price',
+        'voucher_id',
     ];
 
 
     public function customer()
     {
         return $this->belongsTo(Customer::class);
+    }
+    public function voucher()
+    {
+        return $this->belongsTo(Voucher::class);
     }
     public function products()
     {

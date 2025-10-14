@@ -8,13 +8,58 @@ use App\Models\Order;
 use App\Models\Product;
 use App\Models\Stock;
 use App\Models\Table;
+use App\Models\Voucher;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Carbon\Carbon;
 
 class GuestController extends Controller
 {
 
     public function index()
+    {
+        $now = now();
+
+        // ambil produk + kategori + diskon aktif
+        $products = Product::with([
+            'category',
+            'diskons' => function ($q) use ($now) {
+                $q->where('status', 'active')
+                    ->where('start_date', '<=', $now)
+                    ->where('end_date', '>=', $now);
+            }
+        ])->get();
+
+        // hitung harga final berdasarkan diskon
+        $products = $products->map(function ($p) {
+            $original = $p->price;
+            $final = $original;
+
+            // jika ada diskon aktif
+            if ($p->diskons && $p->diskons->count() > 0) {
+                $diskon = $p->diskons->first();
+
+                if ($diskon->type_diskon == 0) {
+                    // 0 = persen
+                    $final = $original - ($original * ($diskon->value / 100));
+                } elseif ($diskon->type_diskon == 1) {
+                    // 1 = potongan harga
+                    $final = max(0, $original - $diskon->value);
+                }
+            }
+
+            $p->price_original = $original;
+            $p->price_final = round($final);
+            return $p;
+        });
+
+        $food_categories = Category::where('category_type', '0')->get();
+        $drink_categories = Category::where('category_type', '1')->get();
+
+        return view('index', compact('products', 'food_categories', 'drink_categories'));
+    }
+
+    public function indexxx()
     {
         $products = Product::with('category')->get();
         $food_categories = Category::where('category_type', '0')->get();
@@ -33,13 +78,20 @@ class GuestController extends Controller
 
     public function checkout(Request $request)
     {
-
-        // dd($request);
         $cart = json_decode($request->cart_data, true);
         $total_price = $request->total_price;
 
         $productIds = collect($cart)->pluck('product_id');
-        $products = Product::whereIn('id', $productIds)->get();
+
+        // Ambil produk + diskon aktif
+        $products = Product::whereIn('id', $productIds)
+            ->with(['diskons' => function ($q) {
+                $q->where('status', 'active')
+                    ->whereDate('start_date', '<=', now())
+                    ->whereDate('end_date', '>=', now());
+            }])
+            ->get();
+
         $tables = Table::where('status', '1')->get();
 
         return view('review', compact('cart', 'products', 'total_price', 'tables'));
@@ -53,6 +105,7 @@ class GuestController extends Controller
     public function submit(Request $request)
     {
 
+        // dd($request);
         if ($request->no_table !== null) {
             $table = Table::where('no_table', $request->no_table)->first();
             if ($table->status == 1) {
@@ -86,9 +139,10 @@ class GuestController extends Controller
                     $order = Order::create([
                         'type' => 1,
                         'status' => 0,
-                        'price' => $request->total_price,
+                        'price' => $request->total_payment,
                         'transaction_id' => null,
                         'customer_id' => $customer_id,
+                        'voucher_id' => $customer_id,
                     ]);
 
                     foreach ($request->products as $item) {
@@ -123,6 +177,88 @@ class GuestController extends Controller
 
         return view('status', compact('orders'));
     }
+
+    public function check(Request $request)
+    {
+        $code = $request->code;
+        $total = floatval($request->total_price ?? 0);
+
+        if ($total <= 0) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Total harga tidak valid.'
+            ]);
+        }
+
+        $voucher = Voucher::where('code', $code)->first();
+
+        if (!$voucher) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Voucher tidak ditemukan.'
+            ]);
+        }
+
+        // === Validasi status aktif ===
+        if ($voucher->status != 1) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Voucher tidak aktif.'
+            ]);
+        }
+
+        // === Validasi masa berlaku ===
+        $now = now();
+        if ($voucher->starttime && $now->lt($voucher->starttime)) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Voucher belum berlaku.'
+            ]);
+        }
+
+        if ($voucher->endtime && $now->gt($voucher->endtime)) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Masa berlaku voucher sudah habis.'
+            ]);
+        }
+
+        // === Validasi balance (sisa pemakaian) ===
+        if ($voucher->balance <= 0) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Voucher sudah habis kuotanya.'
+            ]);
+        }
+
+        // === Hitung diskon ===
+        $discount = 0;
+        if ($voucher->voucher_type == 0) {
+            // Diskon dalam persen
+            $discount = $total * ($voucher->value / 100);
+        } else {
+            // Diskon nominal
+            $discount = $voucher->value;
+        }
+
+        $newTotal = max(0, $total - $discount);
+
+        // === Kurangi balance (opsional, hanya jika kamu mau voucher langsung dianggap terpakai) ===
+        // $voucher->decrement('balance');
+
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Voucher berhasil diterapkan!',
+            'voucher_name' => $voucher->name,
+            'voucher_id' => $voucher->id,
+            'discount' => $discount,
+            'new_total' => $newTotal,
+            'voucher_type' => $voucher->voucher_type, // <— tambahan ini
+            'value' => $voucher->value,             // <— tambahan ini
+        ]);
+    }
+
 
 
     public function search(Request $request)

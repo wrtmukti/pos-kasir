@@ -223,9 +223,34 @@ body {
   background: #fff;
 }
 
-/* #promoForm.collapse.show {
-  transition: all 0.3s ease-in-out;
+.select {
+  background-color: #fff8f3; /* warna lembut */
+  color: #5c3d2e; /* coklat lembut */
+  font-weight: 500;
+  border: 1px solid #e0c3a3;
+  border-radius: 10px;
+  padding: 12px 16px;
+  transition: all 0.2s ease-in-out;
+  appearance: none; /* hilangkan default arrow */
+  background-image: url("data:image/svg+xml;utf8,<svg fill='%235c3d2e' height='24' viewBox='0 0 24 24' width='24' xmlns='http://www.w3.org/2000/svg'><path d='M7 10l5 5 5-5z'/></svg>");
+  background-repeat: no-repeat;
+  background-position: right 10px center;
+  background-size: 18px;
 }
-#promoForm {
-  transition: all 0.3s ease-in-out;
-} */
+
+.select:hover {
+  background-color: #fff3ea;
+  border-color: #d4a373;
+  box-shadow: 0 0 5px rgba(212, 163, 115, 0.4);
+}
+
+.select:focus {
+  outline: none;
+  border-color: #b07d50;
+  box-shadow: 0 0 5px rgba(176, 125, 80, 0.5);
+}
+
+.select option {
+  background-color: #fffdfb;
+  color: #5c3d2e;
+}

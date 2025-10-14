@@ -35,7 +35,7 @@ class ReportController extends Controller
         }
         return view('admin.operator.report.saleShow', compact('products', 'date'));
     }
-
+    // tdtdtt
     public function customer()
     {
         $customers = Customer::where('whatsapp', '!=', null)->orderBy('created_at', 'desc')->get();
