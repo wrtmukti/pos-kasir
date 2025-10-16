@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Order;
 use App\Models\Product;
+use App\Models\SalesSummary;
 use App\Models\Transaction;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -24,30 +25,105 @@ class TransactionController extends Controller
     }
     public function payment(Request  $request)
     {
-        // dd($request->all());
+        dd($request->all());
+        if ($request->payment_method == 'cash') {
+            $cash = $request->value;
+            $debit = 0;
+            $kembalian = $request->kembalian;
+        } else {
+            $cash = 0;
+            $debit = $request->value;
+            $kembalian = 0;
+        }
+
         $transaction = Transaction::create([
             'payment_status' => 0,
             'total_price' => $request->total_price,
-            'cash' => $request->cash - $request->kembalian,
-            'debit' => $request->debit,
-            'kembalian' => $request->kembalian,
+            'cash' => $cash - $request->kembalian,
+            'debit' => $debit,
+            'kembalian' => $kembalian,
             'note' => "Produk Terjual",
         ]);
+
+
         if ($request->order_type == 1) {
-            $order = Order::find($request->order_id)->update([
+            $order = Order::find($request->order_id);
+            $order->update([
                 'status' => 3,
                 'transaction_id' => $transaction->id,
             ]);
+            //deva
+            foreach ($order->products as $product) {
+                SalesSummary::create([
+                    'transaction_date' => now()->toDateString(),
+                    'transaction_id' => $transaction->id,
+                    'order_id' => $order->id,
+                    'product_id' => $product->id,
+                    'category_id' => $product->category_id,
+                    'quantity_sold' => $product->pivot->quantity,
+                    'unit_price' => $product->price,
+                    'total_revenue' => $product->price * $product->pivot->quantity,
+                    'payment_method' => $this->getPaymentMethod($transaction),
+                ]);
+            }
+            //deva end
+
             return redirect()->to('admin/order/manual/' . $request->order_id);
         } else {
-            $orders = Order::where('customer_id', $request->customer_id)->where('status', 2)->update(['status' => 3, 'transaction_id' => $transaction->id]);
+            $orders = Order::where('customer_id', $request->customer_id)->where('status', 2);
+            $ordercuy = $orders->with('products')->get();
+            // dd($ordercuy);
+            $orders->update(['status' => 3, 'transaction_id' => $transaction->id]);
+
+            //deva
+            // $order = Order::where('id', $request->order_id)->get();
+            foreach ($ordercuy as $orderan) {
+                foreach ($orderan->products as $product) {
+                    SalesSummary::create([
+                        'transaction_date' => now()->toDateString(),
+                        'transaction_id' => $transaction->id,
+                        'order_id' => $orderan->id,
+                        'product_id' => $product->id,
+                        'category_id' => $product->category_id,
+                        'quantity_sold' => $product->pivot->quantity,
+                        'unit_price' => $product->price,
+                        'total_revenue' => $transaction->total_price,
+                        'payment_method' => $this->getPaymentMethod($transaction),
+                    ]);
+                }
+            }
+            //deva end
             return redirect()->to('admin/order/online/' . $request->customer_id);
         }
     }
+
+    //deva new function
+
+    private function getPaymentMethod($transaction)
+    {
+        if ($transaction->cash > 0) return 'cash';
+        if ($transaction->debit > 0) return 'card';
+        return 'qris';
+    }
+
+    //end deva
+
     public function invoiceOnline($id)
     {
         $transaction = Transaction::find($id);
-        $orders = Order::with('products')->where('transaction_id', $id)->get();
+
+        $orders = Order::with([
+            'products' => function ($productQuery) {
+                $productQuery->where('status', '1')
+                    ->with(['diskons' => function ($discountQuery) {
+                        $discountQuery->where('start_date', '<=', now())
+                            ->where('end_date', '>=', now())
+                            ->where('status', 'active')
+                            ->orderBy('created_at', 'desc')
+                            ->limit(1);
+                    }]);
+            }
+        ])->where('transaction_id', $id)->get();
         return view('admin.transaction.invoiceOnline', compact('transaction', 'orders'));
     }
     public function invoiceManual($id)

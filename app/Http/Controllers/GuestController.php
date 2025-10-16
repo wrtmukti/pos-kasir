@@ -129,6 +129,13 @@ class GuestController extends Controller
                     $customer_id = $customer->id;
                 }
 
+                if ($request->voucher_id) {
+                    $voucher_id = $request->voucher_id;
+                } else {
+                    $voucher_id = null;
+                }
+
+
                 DB::beginTransaction();
 
                 try {
@@ -139,10 +146,11 @@ class GuestController extends Controller
                     $order = Order::create([
                         'type' => 1,
                         'status' => 0,
-                        'price' => $request->total_payment,
+                        'price' => $request->total_price,
+                        'total_payment' => $request->total_payment,
                         'transaction_id' => null,
                         'customer_id' => $customer_id,
-                        'voucher_id' => $customer_id,
+                        'voucher_id' => $voucher_id,
                     ]);
 
                     foreach ($request->products as $item) {
@@ -173,8 +181,20 @@ class GuestController extends Controller
 
     public function orderStatus()
     {
-        $orders = Order::with('products')->orderBy('created_at', 'desc')->where('status', '!=', 3)->whereHas('customer')->get();
-
+        $orders = Order::with('products')
+            ->whereHas('customer')
+            ->where(function ($query) {
+                $query->where('status', '!=', 3)
+                    ->where(function ($q) {
+                        $q->where('status', '!=', 4)
+                            ->orWhere(function ($sub) {
+                                $sub->where('status', 4)
+                                    ->where('created_at', '>=', Carbon::now()->subHours(2));
+                            });
+                    });
+            })
+            ->orderBy('created_at', 'desc')
+            ->get();
         return view('status', compact('orders'));
     }
 

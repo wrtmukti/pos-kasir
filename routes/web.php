@@ -6,7 +6,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 
 
-Route::get('/', [App\Http\Controllers\GuestController::class, 'index'])->name('home');;
+Route::get('/', [App\Http\Controllers\GuestController::class, 'index'])->name('home');
 Route::post('/order/store', [App\Http\Controllers\GuestController::class, 'store']);
 Route::post('/orders', [App\Http\Controllers\GuestController::class, 'checkout']);
 Route::get('/checkout/review', [App\Http\Controllers\GuestController::class, 'review'])->name('checkout.review'); // halaman isi note & pembayaran
@@ -83,5 +83,19 @@ Route::prefix('admin')->middleware('auth')->group(function () {
         Route::put('/discount/{diskon}', [DiscountController::class, 'update'])->name('discount.update');  // update data
         Route::delete('/discount/{diskon}', [DiscountController::class, 'destroy'])->name('discount.destroy'); // hapus data
 
+
+        //deva
+        Route::get('/report/category', [App\Http\Controllers\SalesSummaryController::class, 'categoryReport']);
+        Route::get('/report/best-products', [App\Http\Controllers\SalesSummaryController::class, 'bestSellingProducts']);
+        //deva end
+
+        Route::get('/logs', [App\Http\Controllers\ActivityLogController::class, 'index'])->name('logs.index');
+        Route::prefix('reports')->group(function () {
+            Route::get('/', [App\Http\Controllers\SalesSummaryController::class, 'index'])->name('reports.index');
+            Route::get('/daily', [App\Http\Controllers\SalesSummaryController::class, 'daily'])->name('reports.daily');
+            Route::get('/weekly', [App\Http\Controllers\SalesSummaryController::class, 'weekly'])->name('reports.weekly');
+            Route::get('/monthly', [App\Http\Controllers\SalesSummaryController::class, 'monthly'])->name('reports.monthly');
+            Route::get('/yearly', [App\Http\Controllers\SalesSummaryController::class, 'yearly'])->name('reports.yearly');
+        });
     });
 });

@@ -265,6 +265,7 @@
                 <li class="nav-item"> <a class="nav-link" href="/admin/operator/report/0">Laporan Penjualan</a></li>
                 <li class="nav-item"> <a class="nav-link" href="/admin/operator/customer">Data Pelanggan</a></li>
                 <li class="nav-item"> <a class="nav-link" href="/admin/operator/employee">Data Karyawan</a></li>
+                <li class="nav-item"> <a class="nav-link" href="/admin/operator/reports/">Laporan Sale</a></li>
               </ul>
             </div>
           </li>
@@ -437,6 +438,45 @@
     });
   });
   </script>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', function () {
+      const paymentSelect = document.getElementById('payment_method');
+      const paymentFields = document.getElementById('payment_fields');
+      const cashInput = document.getElementById('cash');
+      const kembalianWrapper = document.getElementById('kembalian_wrapper');
+      const kembalianInput = document.getElementById('kembalian');
+      const totalbayar = document.getElementById('total_price');
+
+      paymentSelect.addEventListener('change', function () {
+        const value = this.value;
+
+        if (value === '') {
+          // Belum memilih metode pembayaran
+          paymentFields.classList.add('d-none');
+          cashInput.value = '';
+          kembalianWrapper.classList.remove('d-none');
+          kembalianInput.value = '';
+        } else {
+          // Tampilkan form total dibayar
+          paymentFields.classList.remove('d-none');
+
+          if (value === 'debit') {
+            // Debit: sembunyikan kembalian dan set nilainya ke 0
+            kembalianWrapper.classList.add('d-none');
+            kembalianInput.value = 0;
+            cashInput.value = totalbayar.value;
+          } else if (value === 'cash') {
+            // Cash: tampilkan kembalian, reset nilainya
+            kembalianWrapper.classList.remove('d-none');
+            kembalianInput.value = '';
+            cashInput.value = 0;
+          }
+        }
+      });
+    });
+  </script>
+  @stack('scripts') 
 </body>
 
 </html>

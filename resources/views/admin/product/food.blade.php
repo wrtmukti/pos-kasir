@@ -141,7 +141,7 @@
                             onsubmit="return confirm('Ubah status produk?');">
                         @csrf
                         @method('PUT')
-                        @if ($data->status == 0)
+                        @if ($data->status == 1)
                           <input type="hidden" name="status" value="1">
                           <button type="submit" class="btn btn-sm btn-outline-success w-100">
                             <i class="bi bi-check-circle"></i> Aktif

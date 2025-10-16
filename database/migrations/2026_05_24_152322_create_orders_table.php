@@ -18,6 +18,7 @@ class CreateOrdersTable extends Migration
             $table->integer('type');
             $table->integer('status');
             $table->integer('price');
+            $table->integer('total_payment');
             $table->text('note')->nullable();
             $table->timestamps();
 

@@ -18,22 +18,28 @@
   <div class="card ">
     <div class="card-body">
       <div class="row">
-        @foreach ($order->products as $data)
-            <div class=" col-md-3 mb-3">
-              <div class="card">
-                <div class="row">
-                  <div class="col-6">
-                    <img src="{{ asset('images/product/' . $data->image) }}" class="card-img-top imgProduct rounded" alt="...">
-                  </div>
-                  <div class="col-6 p-3">
-                    <p class="card-text fw-bold">{{ $data->name }} </p>
-                    <p class="card-text fw-bold"> x {{ $data->pivot->quantity }} pcs</p>
-                    <p class="card-text ">Rp. {{ $data->price * $data->pivot->quantity }},-</p>
+        <div class="product-section">
+          <div class="row">
+            @foreach ($order->products as $data)
+              <div class="col-6 col-md-3 mb-4 d-flex">
+                <div class="card product-card shadow-sm w-100 rounded-3 overflow-hidden">
+                  <img 
+                    src="{{ asset('images/product/' . $data->image) }}" 
+                    class="card-img-top product-image" 
+                    alt="{{ $data->name }}"
+                  >
+                  <div class="card-body text-center d-flex flex-column justify-content-between">
+                    <h6 class=" mb-2">{{ $data->name }}</h6>
+                    <p class="mb-1 fw-bold">x {{ $data->pivot->quantity }} pcs</p>
+                    {{-- <p class="fw-bold text-dark mb-0">
+                      Rp {{ number_format($data->price * $data->pivot->quantity, 0, ',', '.') }}
+                    </p> --}}
                   </div>
                 </div>
               </div>
-            </div>
-        @endforeach
+            @endforeach
+          </div>
+          </div>
       </div>
     </div>
     <div class="card-footer rounded bg-secondary text-white shadow mb-2">

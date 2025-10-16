@@ -64,3 +64,43 @@ float:left;
 }
 
 
+.product-section .product-card {
+    border: 1px solid #e5e7eb;
+    transition: all 0.25s ease-in-out;
+    background-color: #fff;
+  }
+
+  .product-section .product-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+  }
+
+  .product-section .product-image {
+    height: 160px;
+    width: 100%;
+    object-fit: cover;
+    border-bottom: 1px solid #e5e7eb;
+  }
+
+  .product-section .card-body {
+    padding: 10px 8px;
+  }
+
+  .product-section .card-body h6 {
+    font-size: 1rem;
+    color: #1f2937;
+  }
+
+  .product-section .card-body p {
+    font-size: 0.9rem;
+  }
+
+  /* Responsif: rapat di mobile */
+  @media (max-width: 576px) {
+    .product-section .product-image {
+      height: 130px;
+    }
+    .product-section .card-body h6 {
+      font-size: 0.95rem;
+    }
+  }

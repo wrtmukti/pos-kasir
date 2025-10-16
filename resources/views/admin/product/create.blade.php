@@ -60,8 +60,8 @@
         <div class="form-group">
           <label for="status">Status</label>
           <select name="status" class="form-control" id="exampleFormControlSelect1" value=" {{ old('status') }}">>
-            <option value="0">aktif</option>
-            <option value="1">belum aktif</option>
+            <option value="1">aktif</option>
+            <option value="0">nonaktif</option>
           </select>          
           @error('status')
               <span class="invalid-feedback" role="alert">
