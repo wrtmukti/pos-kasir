@@ -91,12 +91,29 @@ class OrderController extends Controller
                 $products = $request->input('product_id', []);
                 $amounts = $request->input('amount', []);
                 for ($i = 0; $i < count($products); $i++) {
-                    if ($products[$i] != '') {
+                    if (!empty($products[$i])) {
                         $product_id = $products[$i];
                         $amount = $amounts[$i];
-                        $stocks = Stock::wherehas('products', function ($query) use ($product_id) {
-                            $query->where('id', $product_id);
-                        })->update(['amount' => DB::raw('amount - ' . $amount)]);
+
+                        // Ambil relasi product_stock dan stock terkait
+                        $productStocks = DB::table('product_stock')
+                            ->where('product_id', $product_id)
+                            ->get();
+
+                        foreach ($productStocks as $productStock) {
+                            $stock = Stock::find($productStock->stock_id);
+
+                            // Validasi: hanya potong kalau counted == 1
+                            if ($stock && $stock->counted == 1) {
+                                $quantity = $productStock->quantity;
+
+                                // Hitung pengurangan: amount_stock - (quantity * amount_pesanan)
+                                $deduction = $quantity * $amount;
+
+                                // Update stok dengan pengurangan
+                                $stock->decrement('amount', $deduction);
+                            }
+                        }
                     }
                 }
                 $order = Order::findOrFail($id);

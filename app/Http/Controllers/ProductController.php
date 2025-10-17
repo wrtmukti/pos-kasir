@@ -18,15 +18,17 @@ class ProductController extends Controller
     {
         $categories = Category::where('category_type', 0)->orderBy('category_name', 'asc')->get();
         $products = Product::with('stocks')->orderBy('created_at', 'desc')->where('type', 0)->get();
+        $stocks = Stock::orderby('name', 'asc')->where('type', '0')->get();
 
-        return view('admin.product.food', compact('categories', 'products'));
+        return view('admin.product.food', compact('categories', 'products', 'stocks'));
     }
     public function drink()
     {
         $categories = Category::where('category_type', 1)->orderBy('category_name', 'asc')->get();
         $products = Product::with('stocks')->orderBy('name', 'asc')->where('type', 1)->get();
+        $stocks = Stock::orderby('name', 'asc')->where('type', '1')->get();
 
-        return view('admin.product.drink', compact('categories', 'products'));
+        return view('admin.product.drink', compact('categories', 'products', 'stocks'));
     }
 
     public function active(Request $request, $id)
@@ -130,7 +132,28 @@ class ProductController extends Controller
 
     public function update(Request $request, $id)
     {
-        //
+        dd($request);
+        $product = Product::findOrFail($id);
+
+        $product->update([
+            'name' => $request->name,
+            'price' => $request->price,
+            'status' => $request->status,
+        ]);
+
+        // Handle stok (pivot)
+        $stocks = $request->input('stocks', []);
+        $syncData = [];
+
+        foreach ($stocks as $s) {
+            if (!empty($s['id'])) {
+                $syncData[$s['id']] = ['quantity' => $s['quantity']];
+            }
+        }
+
+        $product->stocks()->sync($syncData);
+
+        return redirect()->to('/admin/product/food')->with('success', 'Produk berhasil diperbarui.');
     }
 
 

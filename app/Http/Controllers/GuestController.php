@@ -144,7 +144,7 @@ class GuestController extends Controller
                     }
 
                     $order = Order::create([
-                        'type' => 1,
+                        'type' => 0,
                         'status' => 0,
                         'price' => $request->total_price,
                         'total_payment' => $request->total_payment,

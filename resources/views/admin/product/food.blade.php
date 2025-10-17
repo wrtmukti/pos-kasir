@@ -17,15 +17,10 @@
   <form action="/admin/product/category" method="post">
     @method('POST')
     @csrf 
-  <input type="hidden" value="0" name="category_type">
-  <button type="submit" class="btn btn-primary text-center">+ Produk</a>
+    <input type="hidden" value="0" name="category_type">
+    <button type="submit" class="btn btn-primary text-center">+ Produk</button>
   </form>
 </div>
-
-
-
-
-
 
 @if ($products->count() == 0)
 <div class="alert alert-danger text-center">
@@ -33,132 +28,178 @@
 </div>
 @else
 <div class="container p-0">
-  <div class="scroller scroller-left"><i class="  mdi mdi-arrow-left  "></i></div>
-  <div class="scroller scroller-right"><i class="  mdi mdi-arrow-right  "></i></div>
+  <div class="scroller scroller-left"><i class="mdi mdi-arrow-left"></i></div>
+  <div class="scroller scroller-right"><i class="mdi mdi-arrow-right"></i></div>
   <div class="wrapper">
-  
-  <ul class="nav nav-tabs list" id="myTAB">
-    @foreach ($categories as $category)    
-    <li class="nav-item">
-        <a href="#category{{ $category->id }}" class="nav-link {{ $category->id == 1 ? 'active' : '' }}" data-bs-toggle="tab">{{ $category->category_name }}</a>
-    </li>
-    @endforeach
-  </ul>
+    <ul class="nav nav-tabs list" id="myTAB">
+      @foreach ($categories as $category)    
+      <li class="nav-item">
+          <a href="#category{{ $category->id }}" class="nav-link {{ $category->id == 1 ? 'active' : '' }}" data-bs-toggle="tab">{{ $category->category_name }}</a>
+      </li>
+      @endforeach
+    </ul>
   </div>
+
   <div class="tab-content">
     @foreach ($categories as $category)    
       <div class="tab-pane fade show {{ $category->id == 1 ? 'active' : '' }}" id="category{{ $category->id }}">
         @php
-            $product = $products->where('category_id', $category->id)
+          $product = $products->where('category_id', $category->id)
         @endphp
         <div class="row">
           @if ($product->count() == 0 )
-              <div class="text-center">
-                <p>Produk "{{ $category->category_name }}" kosong</p>
-              </div>
+            <div class="text-center">
+              <p>Produk "{{ $category->category_name }}" kosong</p>
+            </div>
           @else
             @foreach ($product as $data)  
-              {{-- <div class="col-md-3 mb-3">
-                <div class="card">
-                  <div class="row">
-                    <div class="col-6">
-                      <img src="{{ asset('images/product/' . $data->image) }}" class="card-img-top imgProduct rounded" alt="...">
-                    </div>
-                    <div class="col-6 p-3">
-                      <p class="fw-bold mt-3">{{ $data->name }} </p>
-                      <p class="card-text">stok  ( {{ $data->stocks->min('amount') }} )</p> 
-                    <p class="card-text"> Rp. {{ $data->price }},-</p>
-                    
-                    </div>
+              <div class="col-md-3 mb-3">
+                <div class="card h-100 shadow-sm" data-bs-toggle="modal" data-bs-target="#editModal{{ $data->id }}" style="cursor:pointer;">
+                  <div class="card-img-wrapper">
+                    <img src="{{ asset('images/product/' . $data->image) }}" class="card-img-top imgProduct" alt="...">
                   </div>
-                  <div class="card-footer">
+                  <div class="card-body">
+                    <p class="fw-bold mb-1">{{ $data->name }}</p>
+                    <p class="card-text mb-1">Stok ({{ $data->stocks->min('amount') }})</p> 
+                    <p class="card-text fw-semibold text-danger">Rp. {{ $data->price }},-</p>
+                  </div>
+                  <div class="card-footer bg-light">
                     <div class="row">
-                      <div class="col-6 text-center">
+                      {{-- <div class="col-6 text-center">
                         <form action="/admin/product/{{$data->id}}" method="post" style="text-decoration: none">
                           @csrf
                           @method('DELETE')
-                          <input type="hidden" name="{{$data->id}}" value="DELETE">
-                          <button type="sumbit" class="btn btn-danger text-center  btn-ico" onclick="return confirm('Yakin ingin menghapus produk?');">
-                            Hapus</i>
+                          <button type="submit" class="btn btn-danger btn-sm w-100" onclick="return confirm('Yakin ingin menghapus produk?');">
+                            Hapus
                           </button>
                         </form> 
+                      </div> --}}
+                      <div class="col-6 text-center">
+                          <button type="button" class="btn btn-primary btn-sm w-100"  data-bs-toggle="modal" data-bs-target="#editModal{{ $data->id }}">
+                            Ubah
+                          </button>
                       </div>
-                      <div class="col-6">
+                      <div class="col-6 text-center">
                         <form action="/admin/product/active/{{$data->id}}" method="POST" style="text-decoration: none">
                           @csrf
                           @method('PUT')
-                          @if ($data->status == 0)
-                            <input type="hidden" name="status" value="1">
-                            <button type="sumbit" class="btn btn-success text-center  btn-ico" onclick="return confirm('Yakin ingin menonaktifkan produk?');">
-                              Aktif</i>
+                          @if ($data->status == 1)
+                            <input type="hidden" name="status" value="0">
+                            <button type="submit" class="btn btn-success btn-sm w-100" onclick="return confirm('Yakin ingin menonaktifkan produk?');">
+                              Aktif
                             </button> 
                           @else
-                          <input type="hidden" name="status" value="0">
-                          <button type="sumbit" class="btn btn-dark text-center  btn-ico" onclick="return confirm('Yakin ingin mengaktifkan produk?');">
-                            Nonaktif</i>
-                          </button> 
+                            <input type="hidden" name="status" value="1">
+                            <button type="submit" class="btn btn-dark btn-sm w-100" onclick="return confirm('Yakin ingin mengaktifkan produk?');">
+                              Nonaktif
+                            </button> 
                           @endif
-                          
                         </form> 
                       </div>
                     </div>
-                    
                   </div>
+
+                  
                 </div>
-              </div> --}}
+              </div>
+              <!-- MODAL EDIT -->
+              <script>
+              window.stockOptions = `
+                @foreach ($stocks as $stock)
+                  <option value="{{ $stock->id }}">{{ $stock->name }}</option>
+                @endforeach
+              `;
+              </script>
+              <div class="modal fade" id="editModal{{ $data->id }}" tabindex="-1" role="dialog" aria-labelledby="editModalLabel{{ $data->id }}" aria-hidden="true">
+                <div class="modal-dialog modal-dialog-centered" role="document">
+                  <div class="modal-content">
+                    
+                    <!-- FORM UPDATE -->
+                    <form action="{{ route('product.update', $data->id) }}" method="POST" enctype="multipart/form-data">
+                      @csrf
+                      @method('PUT')
 
-              <div class="col-12 mb-4">
-                <div class="card shadow-sm border-0 rounded-3">
-                  <div class="card-body py-2 px-3 d-flex align-items-center">
+                      <div class="modal-header">
+                        <h5 class="modal-title fw-bold" id="editModalLabel{{ $data->id }}">Edit Produk - {{ $data->name }}</h5>
+                        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                      </div>
 
-                    <!-- Gambar Produk -->
-                    <img src="{{ asset('images/product/' . $data->image) }}" 
-                        class="rounded me-3" 
-                        style="width: 100px; height: 100px; object-fit: cover;" 
-                        alt="{{ $data->name }}">
+                      <div class="modal-body">
+                        <div class="form-group">
+                          <label>Nama Produk</label>
+                          <input type="text" class="form-control" name="name" value="{{ $data->name }}" required>
+                        </div>
+                        <div class="form-group mt-2">
+                          <label>Deskripsi Produk</label>
+                          <input type="text" class="form-control" name="price" value="{{ $data->description }}" required>
+                        </div>
+                        <div class="form-group mt-2">
+                          <label>Harga</label>
+                          <input type="number" class="form-control" name="price" value="{{ $data->price }}" required>
+                        </div>
+                        <div class="form-group mt-2">
+                          <label>Status</label>
+                          <select class="form-control" name="status">
+                            <option value="1" {{ $data->status == 1 ? 'selected' : '' }}>Aktif</option>
+                            <option value="0" {{ $data->status == 0 ? 'selected' : '' }}>Nonaktif</option>
+                          </select>
+                        </div>
+                        <div class="form-group mt-2">
+                          <label>Ganti Gambar (opsional)</label>
+                          <input type="file" class="form-control" name="image">
+                          <small class="text-muted">Gambar saat ini: {{ $data->image }}</small>
+                        </div>
+                        <div class="form-group mt-3">
+                          <label>Stok Produk</label>
 
-                    <!-- Info Produk -->
-                    <div class="flex-grow-1">
-                      <h6 class="fw-bold mb-1">{{ $data->name }}</h6>
-                      <small class="text-muted d-block">Stok: {{ $data->stocks->min('amount') }}</small>
-                      <span class="fw-semibold text-success">Rp {{ number_format($data->price, 0, ',', '.') }}</span>
-                    </div>
+                          <div id="stock-wrapper-{{ $data->id }}">
+                            @foreach ($data->stocks as $index => $stock)
+                              <div class="stock-row d-flex align-items-center mb-2">
+                                <select name="stocks[{{ $index }}][id]" class="form-control me-2" style="width: 50%;" required>
+                                  <option value="">-- Pilih Stok --</option>
+                                  @foreach ($stocks as $s)
+                                    <option value="{{ $s->id }}" {{ $stock->id == $s->id ? 'selected' : '' }}>
+                                      {{ $s->name }}
+                                    </option>
+                                  @endforeach
+                                </select>
 
-                    <!-- Tombol Aksi (satu kolom) -->
-                    <div class="d-flex flex-column gap-1 ms-3">
-                      <!-- Hapus -->
-                      <form action="/admin/product/{{$data->id}}" method="post" 
-                            onsubmit="return confirm('Yakin ingin menghapus produk?');">
-                        @csrf
-                        @method('DELETE')
-                        <button type="submit" class="btn btn-sm btn-outline-danger w-100">
-                          <i class="bi bi-trash"></i> Hapus
-                        </button>
-                      </form>
+                                <input type="number" name="stocks[{{ $index }}][quantity]" 
+                                      class="form-control me-2" 
+                                      placeholder="Jumlah" 
+                                      min="1" 
+                                      style="width: 30%;" 
+                                      value="{{ $stock->pivot->quantity ?? 1 }}" 
+                                      required>
 
-                      <!-- Toggle Status -->
-                      <form action="/admin/product/active/{{$data->id}}" method="POST" 
-                            onsubmit="return confirm('Ubah status produk?');">
-                        @csrf
-                        @method('PUT')
-                        @if ($data->status == 1)
-                          <input type="hidden" name="status" value="1">
-                          <button type="submit" class="btn btn-sm btn-outline-success w-100">
-                            <i class="bi bi-check-circle"></i> Aktif
-                          </button>
-                        @else
-                          <input type="hidden" name="status" value="0">
-                          <button type="submit" class="btn btn-sm btn-outline-secondary w-100">
-                            <i class="bi bi-x-circle"></i> Nonaktif
-                          </button>
-                        @endif
-                      </form>
-                    </div>
+                                <button type="button" class="btn btn-danger btn-sm remove-stock">Hapus</button>
+                              </div>
+                            @endforeach
+                          </div>
+
+                          <button type="button" class="btn btn-primary btn-sm mt-2 add-stock" data-wrapper="#stock-wrapper-{{ $data->id }}">Tambah Stok</button>
+                        </div>
+
+                      </div>
+
+                      <div class="modal-footer justify-content-end">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
+                        
+                        <!-- FORM DELETE (terpisah agar tidak bentrok dengan form update) -->
+                        <form action="/admin/product/{{ $data->id }}" method="POST" onsubmit="return confirm('Yakin ingin menghapus produk ini?')" class="d-inline">
+                          @csrf
+                          @method('DELETE')
+                          <button type="submit" class="btn btn-danger">Hapus</button>
+                        </form>
+
+                        <button type="submit" class="btn btn-primary">Simpan</button>
+                      </div>
+
+                    </form>
 
                   </div>
                 </div>
               </div>
-
 
             @endforeach
           @endif
@@ -168,5 +209,67 @@
   </div>
 </div>
 @endif
+
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+  document.querySelectorAll(".add-stock").forEach(btn => {
+    btn.addEventListener("click", function () {
+      const wrapperId = this.dataset.wrapper;
+      const wrapper = document.querySelector(wrapperId);
+      const index = wrapper.querySelectorAll(".stock-row").length;
+
+      const newRow = document.createElement("div");
+      newRow.classList.add("stock-row", "d-flex", "align-items-center", "mb-2");
+      newRow.innerHTML = `
+        <select name="stocks[${index}][id]" class="form-control me-2" style="width: 50%;" required>
+          <option value="">-- Pilih Stok --</option>
+          ${window.stockOptions || ''}
+        </select>
+        <input type="number" name="stocks[${index}][quantity]" class="form-control me-2" placeholder="Jumlah" min="1" style="width: 30%;" required>
+        <button type="button" class="btn btn-danger btn-sm remove-stock">Hapus</button>
+      `;
+      wrapper.appendChild(newRow);
+    });
+  });
+
+  // Hapus stok row
+  document.addEventListener("click", function (e) {
+    if (e.target.classList.contains("remove-stock")) {
+      e.target.closest(".stock-row").remove();
+    }
+  });
+});
+
+</script>
+
+
+{{-- Tambahkan CSS di bawah --}}
+<style>
+  .card-img-wrapper {
+    width: 100%;
+    height: 180px; /* tinggi konsisten */
+    overflow: hidden;
+    border-bottom: 1px solid #ddd;
+  }
+
+  .card-img-top {
+    width: 100%;
+    height: 100%;
+    object-fit: cover; /* biar proporsional tanpa loncat ukuran */
+    transition: transform 0.3s ease;
+  }
+
+  .card-img-top:hover {
+    transform: scale(1.05);
+  }
+
+  .card {
+    border-radius: 12px;
+  }
+
+  .card-body {
+    padding: 10px 15px;
+  }
+</style>
 
 @endsection

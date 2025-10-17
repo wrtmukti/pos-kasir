@@ -53,7 +53,8 @@ Route::prefix('admin')->middleware('auth')->group(function () {
     Route::post('/product/category/store', [App\Http\Controllers\ProductController::class, 'categoryStore']);
     Route::post('/product/create', [App\Http\Controllers\ProductController::class, 'create']);
     Route::post('/product', [App\Http\Controllers\ProductController::class, 'store']);
-    Route::delete('/product/{id}', [App\Http\Controllers\ProductController::class, 'store']);
+    Route::put('/product/{id}', [App\Http\Controllers\ProductController::class, 'update'])->name('product.update');
+    Route::delete('/product/{id}', [App\Http\Controllers\ProductController::class, 'destroy']);
 
     Route::get('/stock', [App\Http\Controllers\StockController::class, 'index']);
     Route::get('/stock/create', [App\Http\Controllers\StockController::class, 'create']);
