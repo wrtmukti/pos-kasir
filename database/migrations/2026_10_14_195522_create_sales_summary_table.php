@@ -14,28 +14,36 @@ return new class extends Migration
         Schema::create('sales_summary', function (Blueprint $table) {
             $table->id();
 
-            // Relasi
+            // 🔗 Relasi utama
             $table->date('transaction_date');
             $table->foreignId('transaction_id')->nullable()->constrained('transactions')->nullOnDelete();
             $table->foreignId('order_id')->nullable()->constrained('orders')->nullOnDelete();
             $table->foreignId('product_id')->nullable()->constrained('products')->nullOnDelete();
             $table->foreignId('category_id')->nullable()->constrained('categories')->nullOnDelete();
 
-            // Detail penjualan
+            // 📦 Detail penjualan per item
             $table->integer('quantity_sold')->default(0);
             $table->decimal('unit_price', 12, 2)->default(0);
+            $table->decimal('subtotal', 12, 2)->default(0); // qty * unit_price
+
+            // 💸 Diskon per item
+            $table->foreignId('discount_id')->nullable()->constrained('discounts')->nullOnDelete();
+            $table->decimal('discount_amount', 12, 2)->default(0);
+            $table->decimal('price_after_discount', 12, 2)->default(0);
+
+            // 🎟️ Voucher persentase (berlaku untuk semua item di order)
+            $table->foreignId('voucher_id')->nullable()->constrained('vouchers')->nullOnDelete();
+            $table->decimal('voucher_percent', 5, 2)->nullable()->default(0);
+            $table->boolean('voucher_applied')->default(false);
+
+            // 💰 Total pendapatan per item setelah semua potongan
             $table->decimal('total_revenue', 12, 2)->default(0);
 
-            // Diskon / voucher
-            $table->decimal('discount_amount', 12, 2)->default(0)->nullable();
-            $table->string('voucher_code', 100)->nullable();
-
-            // Metode pembayaran
+            // 💳 Metode pembayaran
             $table->enum('payment_method', ['cash', 'qris', 'card'])->nullable();
 
             $table->timestamps();
         });
-
     }
 
     /**

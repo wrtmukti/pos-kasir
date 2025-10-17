@@ -81,6 +81,7 @@ class VoucherController extends Controller
             ]);
 
             DB::commit();
+            logActivity('membuat Voucher', "Pengguna membuat voucher: {$voucher->name}");
 
             return redirect()->route('voucher.index')->with('success', 'Voucher berhasil dibuat.');
         } catch (\Exception $e) {
@@ -112,6 +113,7 @@ class VoucherController extends Controller
         ]);
 
         $voucher->update($request->all());
+        logActivity('mengupdate Voucher', "Pengguna mengupdate voucher: {$voucher->name}");
 
         return redirect()->route('voucher.index')->with('success', 'Voucher berhasil diperbarui!');
     }
@@ -120,6 +122,8 @@ class VoucherController extends Controller
     public function destroy($id)
     {
         $voucher = Voucher::findOrFail($id);
+        logActivity('menghapus Voucher', "Pengguna menghapus voucher: {$voucher->name}");
+
         $voucher->delete();
 
         return redirect()->route('voucher.index')->with('danger', 'Voucher telah dihapus!');

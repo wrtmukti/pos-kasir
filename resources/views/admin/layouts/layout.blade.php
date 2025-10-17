@@ -5,6 +5,7 @@
   <!-- Required meta tags -->
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <meta name="csrf-token" content="{{ csrf_token() }}">
   <title>Admin Bagaskara</title>
 
 
@@ -179,6 +180,24 @@
             <a class="nav-link" href="/admin/">
               <i class="menu-icon mdi mdi-account "></i>
               <span class="menu-title">Profile</span>
+            </a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="/admin/logs/">
+              <i class="menu-icon mdi mdi-book-multiple "></i>
+              <span class="menu-title">Logs</span>
+            </a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="/admin/meja/">
+              <i class="menu-icon mdi mdi-coffee"></i>
+              <span class="menu-title">Tables</span>
+            </a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="/admin/sliders/">
+              <i class="menu-icon mdi mdi-account "></i>
+              <span class="menu-title">Banner</span>
             </a>
           </li>
           <li class="nav-item nav-category">Pesanan dan Transaksi</li>

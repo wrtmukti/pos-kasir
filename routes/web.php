@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\DiscountController;
 use App\Models\Discount;
+use App\Http\Controllers\TableController;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 
@@ -29,6 +30,16 @@ Route::prefix('admin')->middleware('auth')->group(function () {
     Route::post('/order', [App\Http\Controllers\OrderController::class, 'store']);
     Route::patch('/order/{id}', [App\Http\Controllers\OrderController::class, 'update']);
     Route::delete('/order/delete/{id}', [App\Http\Controllers\OrderController::class, 'operatorDestroy']);
+    Route::post('/voucher/check', [App\Http\Controllers\OrderController::class, 'check'])->name('voucher.check');
+
+
+
+    Route::get('/sliders', [App\Http\Controllers\SliderController::class, 'index'])->name('admin.sliders.index');
+    Route::get('/sliders/create', [App\Http\Controllers\SliderController::class, 'create'])->name('admin.sliders.create');
+    Route::post('/sliders/store', [App\Http\Controllers\SliderController::class, 'store'])->name('admin.sliders.store');
+    Route::get('/sliders/{slider}/edit', [App\Http\Controllers\SliderController::class, 'edit'])->name('admin.sliders.edit');
+    Route::put('/sliders/{slider}/update', [App\Http\Controllers\SliderController::class, 'update'])->name('admin.sliders.update');
+    Route::delete('/sliders/{slider}', [App\Http\Controllers\SliderController::class, 'destroy'])->name('admin.sliders.destroy');
 
 
     Route::get('/transaction', [App\Http\Controllers\TransactionController::class, 'index']);
@@ -60,6 +71,11 @@ Route::prefix('admin')->middleware('auth')->group(function () {
     Route::get('/stock/create', [App\Http\Controllers\StockController::class, 'create']);
     Route::post('/stock', [App\Http\Controllers\StockController::class, 'store']);
 
+    //deva
+    Route::resource('/meja', TableController::class);
+    Route::get('/meja/{id}/qr', [App\Http\Controllers\TableController::class, 'generateQr'])->name('meja.qr');
+
+    Route::get('/logs', [App\Http\Controllers\ActivityLogController::class, 'index'])->name('logs.index');
     Route::prefix('operator')->middleware('operator')->group(function () {
         Route::get('/report/{id}', [App\Http\Controllers\ReportController::class, 'sale']);
         Route::get('/report/sale/{date}', [App\Http\Controllers\ReportController::class, 'saleShow']);
@@ -90,7 +106,7 @@ Route::prefix('admin')->middleware('auth')->group(function () {
         Route::get('/report/best-products', [App\Http\Controllers\SalesSummaryController::class, 'bestSellingProducts']);
         //deva end
 
-        Route::get('/logs', [App\Http\Controllers\ActivityLogController::class, 'index'])->name('logs.index');
+        // Route::get('/logs', [App\Http\Controllers\ActivityLogController::class, 'index'])->name('logs.index');
         Route::prefix('reports')->group(function () {
             Route::get('/', [App\Http\Controllers\SalesSummaryController::class, 'index'])->name('reports.index');
             Route::get('/daily', [App\Http\Controllers\SalesSummaryController::class, 'daily'])->name('reports.daily');

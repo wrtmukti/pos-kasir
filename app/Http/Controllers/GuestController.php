@@ -6,6 +6,7 @@ use App\Models\Category;
 use App\Models\Customer;
 use App\Models\Order;
 use App\Models\Product;
+use App\Models\Slider;
 use App\Models\Stock;
 use App\Models\Table;
 use App\Models\Voucher;
@@ -18,6 +19,7 @@ class GuestController extends Controller
 
     public function index()
     {
+        $sliders = Slider::where('status', 1)->get();
         $now = now();
 
         // ambil produk + kategori + diskon aktif
@@ -56,25 +58,9 @@ class GuestController extends Controller
         $food_categories = Category::where('category_type', '0')->get();
         $drink_categories = Category::where('category_type', '1')->get();
 
-        return view('index', compact('products', 'food_categories', 'drink_categories'));
+        return view('index', compact('products', 'food_categories', 'drink_categories', 'sliders'));
     }
 
-    public function indexxx()
-    {
-        $products = Product::with('category')->get();
-        $food_categories = Category::where('category_type', '0')->get();
-        $drink_categories = Category::where('category_type', '1')->get();
-        return view('index', compact('products', 'food_categories', 'drink_categories'));
-    }
-    public function indexx()
-    {
-        $products = Product::with(['orders' => function ($q) {
-            $q->orderBy('pivot_quantity', 'asc');
-        }])->take(3)->get();
-        $food_categories = Category::where('category_type', '0')->get();
-        $drink_categories = Category::where('category_type', '1')->get();
-        return view('index', compact('products', 'food_categories', 'drink_categories'));
-    }
 
     public function checkout(Request $request)
     {

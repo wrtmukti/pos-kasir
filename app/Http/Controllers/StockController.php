@@ -8,33 +8,20 @@ use Illuminate\Support\Facades\DB;
 
 class StockController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
+
     public function index()
     {
         $stocks = Stock::orderBy('created_at', 'desc')->get();
         return view('admin.operator.stock.index', compact('stocks'));
     }
 
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
+
     public function create()
     {
         return view('admin.operator.stock.create');
     }
 
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
+
     public function store(Request $request)
     {
         // dd($request);
@@ -55,39 +42,17 @@ class StockController extends Controller
             'counted' => $request->counted,
 
         ]);
+        logActivity('Membuat Stok', "Pengguna membuat stok: {$request->name}");
+
 
         return redirect()->to('/admin/stock')->with('success', 'Stok baru berhasil ditambahkan :)');
     }
 
-    /**
-     * Display the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
     public function show($id)
     {
         //
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function edit($id)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
     public function operatoredit($id)
     {
         // dd($request->amount);
@@ -97,20 +62,35 @@ class StockController extends Controller
     public function operatorUpdate(Request $request, $id)
     {
         // dd($request->amount);
+        // Validasi input
+        $request->validate([
+            'name' => 'required|string|max:255',
+            'type' => 'required|in:0,1',
+            'unit' => 'required|in:0,1,2,3',
+            'counted' => 'required|boolean',
+            'amount' => 'required|numeric|min:0',
+        ]);
+
+        // Cari stok berdasarkan ID
         $stock = Stock::findOrFail($id);
-        $stock->update(['amount' => DB::raw('amount + ' . $request->amount)]);
+
+        // Update data
+        $stock->update([
+            'name' => $request->name,
+            'type' => $request->type,
+            'unit' => $request->unit,
+            'counted' => $request->counted,
+            'amount' => $request->amount,
+        ]);
+        logActivity('mengupdate Stok', "Pengguna mengupdate stok: {$stock->name}");
+
         return redirect()->to('/admin/stock')->with('success', 'Stok berhasil diupdate :)');
     }
 
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
     public function operatorDestroy($id)
     {
-        Stock::destroy($id);
-        return redirect()->to('/admin/stock')->with('danger', 'item dihapus:(');
+        $stock = Stock::findOrFail($id);
+        logActivity('menghapus Stok', "Pengguna menghapus stok: {$stock->name}");
+        return redirect()->to('/admin/stock')->with('danger', 'Stok dihapus:(');
     }
 }

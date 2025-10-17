@@ -64,14 +64,13 @@
       </ol>
       <div class="carousel-inner">
         <div class="carousel-item active">
-          <img src="/images/website/img6.jpg" class="d-block w-100" alt="Cafe Image 1">
+          <img src="/images/sliders/bagaskara.jpg" class="d-block w-100" alt="Cafe Image 1">
         </div>
-        <div class="carousel-item">
-          <img src="/images/website/img6.jpg" class="d-block w-100" alt="Cafe Image 2">
-        </div>
-        <div class="carousel-item">
-          <img src="/images/website/img6.jpg" class="d-block w-100" alt="Cafe Image 3">
-        </div>
+        @foreach ($sliders as $slider)
+          <div class="carousel-item">
+            <img src="/images/sliders/{{ $slider->image }}" class="d-block w-100" alt="Cafe Image 2">
+          </div>
+        @endforeach
       </div>
       <a class="carousel-control-prev" href="#heroCarousel" role="button" data-slide="prev">
         <span class="carousel-control-prev-icon" aria-hidden="true"></span>
@@ -85,7 +84,7 @@
       <div>
         <small id="openStatus" class="text-success font-weight-bold">Buka, 24 Jam</small>
       </div>
-      <button class="btn btn-success btn-sm">Reservasi <i class="fas fa-arrow-right ml-1"></i></button>
+      {{-- <button class="btn btn-success btn-sm">Reservasi <i class="fas fa-arrow-right ml-1"></i></button> --}}
     </div>
   </div>
 

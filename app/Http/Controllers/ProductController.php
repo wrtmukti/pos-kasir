@@ -66,6 +66,8 @@ class ProductController extends Controller
             $input['image'] = "$profileImage";
         }
         Category::create($input);
+        logActivity('menambahkan Kategori', "Pengguna menambahkan kategori: {$input['category_name']}");
+
 
         $category_type = $request->category_type;
         $categories = Category::where('category_type', $request->category_type)->get();
@@ -109,6 +111,8 @@ class ProductController extends Controller
             $stockData[$stock['id']] = ['quantity' => $stock['quantity']];
         }
         $product->stocks()->attach($stockData);
+        logActivity('menambahkan Produk', "Pengguna menambahkan produk: {$request->name}");
+
 
         if ($request->type == 0) {
             return redirect()->to('/admin/product/food')->with('success', 'Produk baru berhasil ditambahkan :)');
@@ -132,16 +136,42 @@ class ProductController extends Controller
 
     public function update(Request $request, $id)
     {
-        dd($request);
         $product = Product::findOrFail($id);
 
-        $product->update([
-            'name' => $request->name,
-            'price' => $request->price,
-            'status' => $request->status,
+        // Validasi input
+        $request->validate([
+            'name' => 'required|string|max:255',
+            'price' => 'required|numeric|min:0',
+            'status' => 'required|in:0,1',
+            'description' => 'nullable|string',
+            'image' => 'nullable|image|mimes:jpg,jpeg,png,webp|max:2048', // validasi gambar
         ]);
 
-        // Handle stok (pivot)
+        // Simpan data dasar produk
+        $product->name = $request->name;
+        $product->price = $request->price;
+        $product->status = $request->status;
+        $product->description = $request->description;
+
+        // === Handle update gambar ===
+        if ($request->hasFile('image')) {
+            // Hapus gambar lama jika ada dan file-nya ada di folder
+            if ($product->image && file_exists(public_path('images/product/' . $product->image))) {
+                unlink(public_path('images/product/' . $product->image));
+            }
+
+            // Simpan gambar baru
+            $file = $request->file('image');
+            $filename = time() . '_' . $file->getClientOriginalName();
+            $file->move(public_path('images/product'), $filename);
+
+            // Simpan nama file baru ke database
+            $product->image = $filename;
+        }
+
+        $product->save();
+
+        // === Handle stok (pivot) ===
         $stocks = $request->input('stocks', []);
         $syncData = [];
 
@@ -153,13 +183,20 @@ class ProductController extends Controller
 
         $product->stocks()->sync($syncData);
 
-        return redirect()->to('/admin/product/food')->with('success', 'Produk berhasil diperbarui.');
+        // Redirect sesuai tipe produk
+        if ($request->type == 0) {
+            return redirect()->to('/admin/product/food')->with('success', 'Produk berhasil diperbarui.');
+        } else {
+            return redirect()->to('/admin/product/drink')->with('success', 'Produk berhasil diperbarui.');
+        }
     }
 
 
     public function destroy($id)
     {
         $link = Product::find($id);
+        logActivity('menghapus Produk', "Pengguna menghapus produk: {$link->name}");
+
         Product::destroy($id);
         if ($link->type == 0) {
             return redirect()->to('/admin/product/food')->with('danger', 'item dihapus:(');

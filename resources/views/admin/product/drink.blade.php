@@ -65,15 +65,6 @@
                   </div>
                   <div class="card-footer bg-light">
                     <div class="row">
-                      {{-- <div class="col-6 text-center">
-                        <form action="/admin/product/{{$data->id}}" method="post" style="text-decoration: none">
-                          @csrf
-                          @method('DELETE')
-                          <button type="submit" class="btn btn-danger btn-sm w-100" onclick="return confirm('Yakin ingin menghapus produk?');">
-                            Hapus
-                          </button>
-                        </form> 
-                      </div> --}}
                       <div class="col-6 text-center">
                           <button type="button" class="btn btn-primary btn-sm w-100"  data-bs-toggle="modal" data-bs-target="#editModal{{ $data->id }}">
                             Ubah
@@ -123,31 +114,50 @@
                         <h5 class="modal-title fw-bold" id="editModalLabel{{ $data->id }}">Edit Produk - {{ $data->name }}</h5>
                         <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
                       </div>
-
+                      
+                      <input type="hidden" class="form-control" name="type" value="1">
                       <div class="modal-body">
+                        <div class="row">
+                          <div class="col-6">
+                            <div class="form-group">
+                              <label>Kode Produk</label>
+                              <input type="text" class="form-control" name="name" value="{{ $data->code }}" disabled>
+                            </div>
+                          </div>
+                          <div class="col-6">
+                            <div class="form-group">
+                              <label>Nama Produk</label>
+                              <input type="text" class="form-control" name="name" value="{{ $data->name }}" required>
+                            </div>
+                          </div>
+                        </div>
+                        
+                        <div class="row">
+                          <div class="col-6">
+                            <div class="form-group">
+                              <label>Harga</label>
+                              <input type="number" class="form-control" name="price" value="{{ $data->price }}" required>
+                            </div>
+                          </div>
+                          <div class="col-6">
+                            <div class="form-group">
+                              <label>Status</label>
+                              <select class="form-control" name="status">
+                                <option value="1" {{ $data->status == 1 ? 'selected' : '' }}>Aktif</option>
+                                <option value="0" {{ $data->status == 0 ? 'selected' : '' }}>Nonaktif</option>
+                              </select>
+                            </div>
+                          </div>
+                        </div>
                         <div class="form-group">
-                          <label>Nama Produk</label>
-                          <input type="text" class="form-control" name="name" value="{{ $data->name }}" required>
-                        </div>
-                        <div class="form-group mt-2">
                           <label>Deskripsi Produk</label>
-                          <input type="text" class="form-control" name="price" value="{{ $data->description }}" required>
+                          <input type="text" class="form-control" name="description" value="{{ $data->description }}" required>
                         </div>
-                        <div class="form-group mt-2">
-                          <label>Harga</label>
-                          <input type="number" class="form-control" name="price" value="{{ $data->price }}" required>
-                        </div>
-                        <div class="form-group mt-2">
-                          <label>Status</label>
-                          <select class="form-control" name="status">
-                            <option value="1" {{ $data->status == 1 ? 'selected' : '' }}>Aktif</option>
-                            <option value="0" {{ $data->status == 0 ? 'selected' : '' }}>Nonaktif</option>
-                          </select>
-                        </div>
+    
                         <div class="form-group mt-2">
                           <label>Ganti Gambar (opsional)</label>
                           <input type="file" class="form-control" name="image">
-                          <small class="text-muted">Gambar saat ini: {{ $data->image }}</small>
+                          {{-- <small class="text-muted">Gambar saat ini: {{ $data->image }}</small> --}}
                         </div>
                         <div class="form-group mt-3">
                           <label>Stok Produk</label>
@@ -184,17 +194,17 @@
 
                       <div class="modal-footer justify-content-end">
                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
-                        
                         <!-- FORM DELETE (terpisah agar tidak bentrok dengan form update) -->
-                        <form action="/admin/product/{{ $data->id }}" method="POST" onsubmit="return confirm('Yakin ingin menghapus produk ini?')" class="d-inline">
-                          @csrf
-                          @method('DELETE')
-                          <button type="submit" class="btn btn-danger">Hapus</button>
-                        </form>
-
+                        <button type="button" class="btn btn-danger" onclick="deleteProduct({{ $data->id }})">Hapus</button>
                         <button type="submit" class="btn btn-primary">Simpan</button>
                       </div>
 
+                    </form>
+
+                    <!-- FORM DELETE TERPISAH -->
+                    <form id="deleteForm-{{ $data->id }}" action="/admin/product/{{ $data->id }}" method="POST" class="d-none">
+                      @csrf
+                      @method('DELETE')
                     </form>
 
                   </div>
@@ -240,6 +250,14 @@
   });
 });
 
+</script>
+
+<script>
+  function deleteProduct(id) {
+    if (confirm('Yakin ingin menghapus produk ini?')) {
+      document.getElementById(`deleteForm-${id}`).submit();
+    }
+  }
 </script>
 
 

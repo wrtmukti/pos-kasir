@@ -330,10 +330,21 @@
             
               @php
                   $total = 0;
+                  $potongan = 0;
                   $order_finish = $orders->where('status', '2');
               @endphp
               @foreach ($orders as $order)
-              <?php $total += $order->price ?>
+              <?php $total += $order->price;
+              if ($order->voucher_id) {
+                if ($order->voucher->voucher_type == 0 ) {
+                  $potongan += ($order->price * $order->voucher->value / 100 );
+                } else {
+                  $potongan += ($$order->voucher->value);
+                }
+              }
+              
+              
+              ?>
               @endforeach
               <form action="/admin/transaction/payment" method="post">
                 @csrf
@@ -359,9 +370,9 @@
                           <div class="form-group">
                             <label for="amount">Jumlah Potongan</label>
                             @if($order->voucher->voucher_type === 0)
-                            <input class="form-control text-center" id="amount" type="text" name="" value="-{{ $order->price * $order->voucher->value / 100  }}" readonly="readonly">
+                            <input class="form-control text-center" id="amount" type="text" name="" value="-{{ $potongan  }}" readonly="readonly">
                             @elseif ($order->voucher->voucher_type === 1)
-                            <input class="form-control text-center" id="amount" type="text" name="" value="-{{ $order->voucher->value }}" readonly="readonly">
+                            <input class="form-control text-center" id="amount" type="text" name="" value="-{{  $potongan }}" readonly="readonly">
                             @endif
                           </div>
                         </div>

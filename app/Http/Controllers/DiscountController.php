@@ -37,6 +37,7 @@ class DiscountController extends Controller
         ]);
 
         Discount::create($validated);
+        logActivity('menambahkan Diskon', "Pengguna menambahkan diskon: {$request->keterangan}");
         return redirect()->route('discount.index')->with('success', 'Diskon berhasil ditambahkan!');
     }
 
@@ -59,11 +60,13 @@ class DiscountController extends Controller
         ]);
 
         $diskon->update($validated);
+        logActivity('mengupdate Diskon', "Pengguna mengupdate diskon: {$request->keterangan}");
         return redirect()->route('discount.index')->with('success', 'Diskon berhasil diperbarui!');
     }
 
     public function destroy(Discount $diskon)
     {
+        logActivity('menghapus Diskon', "Pengguna menghapus diskon: {$diskon->keterangan}");
         $diskon->delete();
         return redirect()->route('discount.index')->with('success', 'Diskon berhasil dihapus!');
     }
