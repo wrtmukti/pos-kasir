@@ -244,6 +244,9 @@
               <span class="menu-title">Stok</span>
             </a>
           </li>
+
+          {{-- OPERATOR --}}
+          @if (Auth::user()->role == 1)
           <li class="nav-item nav-category">Promo</li>
           <li class="nav-item">
             <a class="nav-link" data-bs-toggle="collapse" href="#disc" aria-expanded="false" aria-controls="disc">
@@ -258,9 +261,6 @@
               </ul>
             </div>
           </li>
-          {{-- OPERATOR --}}
-          @if (Auth::user()->role == 1)
-          
 
           <li class="nav-item nav-category">Laporan</li>
           <li class="nav-item">
