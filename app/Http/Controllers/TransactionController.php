@@ -26,7 +26,7 @@ class TransactionController extends Controller
     }
     public function payment(Request  $request)
     {
-        // dd($request->all());
+        dd($request->all());
         if ($request->payment_method == 'cash') {
             $cash = $request->value;
             $debit = 0;
