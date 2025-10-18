@@ -1,7 +1,7 @@
 @extends('admin.layouts.layout')
 @section('content')
 <div class="row my-3">
-  <h3 class="text-center">Daftar Pesanan</h3>
+  <h3 class="text-center">Daftar Pesanan Pelanggan</h3>
 </div>
 <div class="row">
   <div class="col-md-12">
@@ -11,8 +11,8 @@
           <table class="table table-hover">
             <thead>
               <tr>
-                <th class="text-center"><h5 class=" fw-bold">ORDER</h5></th>
-                <th class="text-center"><h5 class=" fw-bold">STATUS</h5></th>
+                <th class="text-center"><h5 class=" fw-bold">Pesanan</h5></th>
+                <th class="text-center"><h5 class=" fw-bold">Status Pesanan</h5></th>
               </tr>
             </thead>
             <tbody>
@@ -24,7 +24,11 @@
                     <td class="text-center">
                       <div class="row">
                         <div class="">
-                          <a href="/admin/order/online/{{ $customer_id }}" class="badge badge-danger nav-link fw-bold">Meja {{ $pelanggan['no_table'] }}</a>
+                          <a href="/admin/order/online/{{ $customer_id }}" class="badge badge-danger nav-link fw-bold">Pesanan Meja {{ $pelanggan['no_table'] }}</a>
+                          @php
+                            $ordercuy = App\Models\Order::where('customer_id', $customer_id)->orderBy('created_at', 'desc')->first();
+                          @endphp
+                          <a href="/admin/order/online/{{ $customer_id }}" class="nav-link text-dark">{{ $ordercuy->created_at->diffForHumans(); }}</a>
                         </div>
                       </div>
                       {{-- <div class="row">

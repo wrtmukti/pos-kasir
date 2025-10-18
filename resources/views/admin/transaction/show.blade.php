@@ -67,10 +67,10 @@
                     
                 <tr>
                   <td>
-                    @if ($data->status == 1)
-                    <a href="/admin/order/online/{{ $data->id }}" class="nav-link text-center text-dark">Pesanan Online</a>
+                    @if ($data->type === 0)
+                    <a href="/admin/order/online/{{ $data->id }}" class="nav-link text-center text-dark">Pesanan Pelanggan</a>
                     @else
-                    <a href="/admin/order/manual/{{ $data->id }}" class="nav-link text-center text-dark">Pesanan Manual</a>
+                    <a href="/admin/order/manual/{{ $data->id }}" class="nav-link text-center text-dark">Pesanan Kasir</a>
                         
                     @endif                  
                   </td>

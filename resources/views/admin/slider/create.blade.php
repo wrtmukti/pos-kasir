@@ -1,6 +1,6 @@
 @extends('admin.layouts.layout')
 @section('content')
-<h2>Tambah Slider</h2>
+<h2>Tambah Banner</h2>
 
 <form action="{{ route('admin.sliders.store') }}" method="POST" enctype="multipart/form-data">
   @csrf

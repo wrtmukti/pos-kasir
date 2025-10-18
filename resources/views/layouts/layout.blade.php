@@ -17,6 +17,28 @@
   </style>
 </head>
 <body>
+    <!-- Navbar -->
+  <nav class="navbar navbar-light bg-white shadow-sm sticky-top">
+    <div class="container d-flex justify-content-between">
+      <a href="/{{ $table->id }}" class="navbar-brand">Kopi Bagaskara</a>
+      <div>
+        {{-- <i class="fas fa-search mr-3 text-brown"></i> --}}
+        <i class="fas fa-bars text-brown" id="menuToggle"></i>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Offcanvas menu -->
+  <div id="offcanvasMenu" class="offcanvas-menu">
+    <button class="close mb-3" id="closeMenu">&times;</button>
+    <h6 class="font-weight-bold text-brown">Menu</h6>
+    <ul class="list-unstyled mt-3">
+      <li><a href="/{{ $table->id }}" class="d-block py-2 text-brown">Beranda</a></li>
+      <li><a href="/orders/status/{{ $table->id }}" class="d-block py-2 text-brown">Status Order</a></li>
+      {{-- <li><a href="#" class="d-block py-2 text-brown">Promo</a></li> --}}
+      {{-- <li><a href="#" class="d-block py-2 text-brown">Reservasi</a></li> --}}
+    </ul>
+  </div>
   <div class="container">
     @yield('content')
   </div>
@@ -24,5 +46,14 @@
   <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.2/dist/js/bootstrap.bundle.min.js"></script>
   <script src="{{ asset('js/index.js') }}"></script>
+  <script>
+    // Toggle menu
+  document.getElementById("menuToggle").addEventListener("click", () => {
+    document.getElementById("offcanvasMenu").classList.add("show");
+  });
+  document.getElementById("closeMenu").addEventListener("click", () => {
+    document.getElementById("offcanvasMenu").classList.remove("show");
+  });
+  </script>
 </body>
 </html>

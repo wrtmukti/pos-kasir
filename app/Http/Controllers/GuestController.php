@@ -17,9 +17,10 @@ use Carbon\Carbon;
 class GuestController extends Controller
 {
 
-    public function index()
+    public function index($table_id)
     {
         $sliders = Slider::where('status', 1)->get();
+        $table = Table::findorfail($table_id);
         $now = now();
 
         // ambil produk + kategori + diskon aktif
@@ -30,7 +31,7 @@ class GuestController extends Controller
                     ->where('start_date', '<=', $now)
                     ->where('end_date', '>=', $now);
             }
-        ])->get();
+        ])->where('status', 1)->get();
 
         // hitung harga final berdasarkan diskon
         $products = $products->map(function ($p) {
@@ -55,15 +56,24 @@ class GuestController extends Controller
             return $p;
         });
 
-        $food_categories = Category::where('category_type', '0')->get();
-        $drink_categories = Category::where('category_type', '1')->get();
+        $food_categories = Category::where('category_type', 0)
+            ->whereHas('products', function ($query) {
+                $query->where('status', 1);
+            })
+            ->get();
+        $drink_categories = Category::where('category_type', 1)
+            ->whereHas('products', function ($query) {
+                $query->where('status', 1);
+            })
+            ->get();
 
-        return view('index', compact('products', 'food_categories', 'drink_categories', 'sliders'));
+        return view('index', compact('products', 'food_categories', 'drink_categories', 'sliders', 'table'));
     }
 
 
     public function checkout(Request $request)
     {
+
         $cart = json_decode($request->cart_data, true);
         $total_price = $request->total_price;
 
@@ -77,10 +87,10 @@ class GuestController extends Controller
                     ->whereDate('end_date', '>=', now());
             }])
             ->get();
+        // dd($request);
+        $table = Table::findorfail($request->table_id);
 
-        $tables = Table::where('status', '1')->get();
-
-        return view('review', compact('cart', 'products', 'total_price', 'tables'));
+        return view('review', compact('cart', 'products', 'total_price', 'table'));
     }
 
     public function review()
@@ -152,36 +162,43 @@ class GuestController extends Controller
 
                     DB::commit();
                     // return redirect('/')->with('success', 'Pesanan berhasil dibuat!');
-                    return redirect()->route('order.status')->with('success', 'Pesanan berhasil dibuat!');
+                    return redirect()->to('orders/status/' . $table->id)->with('success', 'Pesanan berhasil dibuat!');
                 } catch (\Exception $e) {
                     DB::rollBack();
-                    return redirect('/')->with('error', $e->getMessage());
+                    return redirect()->to('/' . $table->id)->with('error', $e->getMessage());
                 }
             } else {
-                return redirect('/')->with('error', 'nomor meja');
+                return redirect()->to('/' . $table->id)->with('error', 'nomor meja');
             }
         } else {
-            return redirect()->to('/order/status')->with('danger', 'Maaf Kamu belum mengisi no meja');
+            return redirect()->to('/orders/status')->with('danger', 'Maaf Kamu belum mengisi no meja');
         }
     }
 
-    public function orderStatus()
+    public function orderStatus($table_id)
     {
+        $table = Table::findorfail($table_id);
         $orders = Order::with('products')
-            ->whereHas('customer')
+            ->whereHas('customer', function ($query) use ($table) {
+                $query->where('no_table', $table->no_table);
+            })
             ->where(function ($query) {
                 $query->where('status', '!=', 3)
                     ->where(function ($q) {
                         $q->where('status', '!=', 4)
                             ->orWhere(function ($sub) {
+                                // tampilkan status 4 hanya jika customer TIDAK punya order status 3
                                 $sub->where('status', 4)
-                                    ->where('created_at', '>=', Carbon::now()->subHours(2));
+                                    ->whereDoesntHave('customer.orders', function ($c) {
+                                        $c->where('status', 3);
+                                    });
                             });
                     });
             })
-            ->orderBy('created_at', 'desc')
+            ->orderBy('created_at', 'asc')
             ->get();
-        return view('status', compact('orders'));
+        // dd($orders);
+        return view('status', compact('orders', 'table'));
     }
 
     public function check(Request $request)
@@ -250,7 +267,7 @@ class GuestController extends Controller
         $newTotal = max(0, $total - $discount);
 
         // === Kurangi balance (opsional, hanya jika kamu mau voucher langsung dianggap terpakai) ===
-        // $voucher->decrement('balance');
+        $voucher->decrement('balance');
 
 
         return response()->json([

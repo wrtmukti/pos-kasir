@@ -7,6 +7,7 @@
   <form action="/submits" method="POST">
     @csrf
     <input type="hidden" name="total_price" value="{{ $total_price }}">
+    <input type="hidden" name="no_table" value="{{ $table->no_table }}">
 
     <div class="card show shadow-sm mb-3">
       <div class="card-body">
@@ -116,17 +117,17 @@
     {{-- Metode Pembayaran --}}
     <div class="card show shadow-sm mb-3">
       <div class="card-body">
-        <h6 class="font-weight-bold text-brown mb-2">Metode Pembayaran</h6>
+        {{-- <h6 class="font-weight-bold text-brown mb-2">Metode Pembayaran</h6>
         <div class="form-group">
           <select name="payment_method" class="form-control">
             <option value="cash">Bayar Tunai</option>
             <option value="qris">QRIS / E-Wallet</option>
             <option value="transfer">Transfer Bank</option>
           </select>
-        </div>
+        </div> --}}
 
         {{-- PROMO SECTION --}}
-        <div class="mt-4">
+        <div class="">
           <button type="button" id="togglePromo" class="btn btn-outline-brown btn-block">
             🎁 Mau dapat info promo menarik?
           </button>
@@ -146,7 +147,7 @@
     </div>
 
     {{-- Pilih Meja --}}
-    <div class="card show shadow-sm mb-3">
+    {{-- <div class="card show shadow-sm mb-3">
       <div class="card-body">
         <h6 class="font-weight-bold text-brown mb-2">Meja</h6>
         <div class="form-group">
@@ -157,7 +158,7 @@
           </select>
         </div>
       </div>
-    </div>
+    </div> --}}
 
     <button type="submit" class="btn btn-brown btn-block shadow-sm mt-3">Konfirmasi Pesanan</button>
   </form>

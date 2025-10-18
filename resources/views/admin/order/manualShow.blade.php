@@ -184,13 +184,14 @@
         <div class="modal-body">
           
           @if ($order->status < 2)
-            <p>Ordernya yang belum selesai ajg :(</p>
+            <p>Ordernya yang belum selesai</p>
           @else
             <form action="/admin/transaction/payment" method="post">
               @csrf
               <div class="modal-body">
                 <input type="hidden" name="order_type" value="1">    
                 <input type="hidden" name="payment_status" value="0">
+                <input type="hidden" name="order_id" value="{{ $order->id }}">
                   @if($order->voucher_id)
                     <div class="row">
                       <label for="product" class="fw-bold">Voucher diterapkan</label>

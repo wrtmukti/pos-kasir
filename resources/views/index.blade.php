@@ -22,29 +22,7 @@
     </div>
   @endif
 
-  <!-- Navbar -->
-  <nav class="navbar navbar-light bg-white shadow-sm sticky-top">
-    <div class="container d-flex justify-content-between">
-      <span class="navbar-brand">Kopi Bagaskara</span>
-      <div>
-        <i class="fas fa-search mr-3 text-brown"></i>
-        <i class="fas fa-bars text-brown" id="menuToggle"></i>
-      </div>
-    </div>
-  </nav>
 
-  <!-- Offcanvas menu -->
-  <div id="offcanvasMenu" class="offcanvas-menu">
-    <button class="close mb-3" id="closeMenu">&times;</button>
-    <h6 class="font-weight-bold text-brown">Menu</h6>
-    <ul class="list-unstyled mt-3">
-      <li><a href="/" class="d-block py-2 text-brown">Beranda</a></li>
-      <li><a href="/orders/status" class="d-block py-2 text-brown">Status Order</a></li>
-      <li><a href="#" class="d-block py-2 text-brown">Promo</a></li>
-      <li><a href="#" class="d-block py-2 text-brown">Reservasi</a></li>
-      <li><a href="#" class="d-block py-2 text-brown">Kontak</a></li>
-    </ul>
-  </div>
 
   <!-- Tanggal -->
   <div class="mt-3">
@@ -82,9 +60,9 @@
 
     <div class="d-flex justify-content-between align-items-center mt-2">
       <div>
-        <small id="openStatus" class="text-success font-weight-bold">Buka, 24 Jam</small>
+        <small id="openStatus" class="text-success font-weight-bold">Buka 10:00 - 22:00 WIB</small>
       </div>
-      {{-- <button class="btn btn-success btn-sm">Reservasi <i class="fas fa-arrow-right ml-1"></i></button> --}}
+      <a href="/orders/status/{{ $table->id }}" class="btn btn-brown btn-sm">Cek Status Pesanan <i class="fas fa-arrow-right ml-1"></i></a>
     </div>
   </div>
 
@@ -126,10 +104,11 @@
   </div>
 
   <!-- Bar Keranjang -->
-  <form id="checkoutForm" action="/orders" method="POST">
+  <form id="checkoutForm" action="{{ route('checkout.checkout') }}" method="POST">
     @csrf
     <input type="hidden" name="cart_data" id="cartData">
     <input type="hidden" name="total_price" id="totalPrice">
+    <input type="hidden" name="table_id" value="{{ $table->id }}">
 
     <div id="cart">
       <span id="cart-info" class="font-weight-bold text-brown"></span>
@@ -239,20 +218,32 @@
       }
 
       // --- 🧱 Card produk ---
+      //new UPDATE <h1>
+      function escapeHTML(str) {
+          if (!str) return '';
+          return str
+            .replace(/&/g, "&amp;")
+            .replace(/</g, "&lt;")
+            .replace(/>/g, "&gt;")
+            .replace(/"/g, "&quot;")
+            .replace(/'/g, "&#039;");
+        }
       col.innerHTML = `
         <div class="card h-100 shadow-sm position-relative">
-          <img src="${imgSrc}" class="card-img-top" alt="${p.name}" style="height:150px;object-fit:cover;">
+          <img src="${imgSrc}" class="card-img-top" alt="${escapeHTML(p.name)}" style="height:150px;object-fit:cover;">
           <div class="card-body d-flex flex-column">
             <div class="d-flex justify-content-between align-items-center flex-wrap mb-1">
-              <h6 class="card-title mb-0">${p.name}</h6>
-              ${diskonLabel ? `<span class="badge bg-danger text-white">${diskonLabel}</span>` : ""}
+              <h6 class="card-title mb-0">${escapeHTML(p.name)}</h6>
+              ${diskonLabel ? `<span class="badge bg-danger text-white">${escapeHTML(diskonLabel)}</span>` : ""}
             </div>
-            <small class="text-muted mb-2">${p.description ?? ''}</small>
+            <small class="text-muted mb-2">${escapeHTML(p.description ?? '')}</small>
             ${priceDisplay}
             <button class="btn btn-brown btn-sm mt-auto" onclick="addToCart(${p.id})">Tambah</button>
           </div>
         </div>
+
       `;
+      // end upda
 
       container.appendChild(col);
 
@@ -382,37 +373,52 @@
 
       const row = document.createElement("div");
       row.className = "d-flex justify-content-between align-items-center bg-light p-2 rounded mb-2";
+      //new UPDATE <h1>
+      function escapeHTML(str) {
+          if (!str) return '';
+          return str
+            .replace(/&/g, "&amp;")
+            .replace(/</g, "&lt;")
+            .replace(/>/g, "&gt;")
+            .replace(/"/g, "&quot;")
+            .replace(/'/g, "&#039;");
+        }
 
       row.innerHTML = `
-        <div class="d-flex align-items-center flex-grow-1">
-          <img src="${imgSrc}" class="rounded mr-2" style="width:50px;height:50px;object-fit:cover;">
-          <div>
-            <div class="font-weight-bold small d-flex align-items-center gap-1">
-              ${item.name}
-              ${item.diskonLabel ? `<span class="badge bg-danger text-white ms-1 ml-2" style="font-size:0.7rem;">${item.diskonLabel}</span>` : ""}
-            </div>
-
+      <div class="d-flex align-items-center flex-grow-1">
+        <img src="${imgSrc}" class="rounded mr-2" style="width:50px;height:50px;object-fit:cover;">
+        <div>
+          <div class="font-weight-bold small d-flex align-items-center gap-1">
+            ${escapeHTML(item.name)}
             ${
-              item.finalPrice < item.price
-                ? `
-                  <div class="small text-muted">
-                    <s>Rp ${totalOriginal.toLocaleString('id-ID')}</s>
-                  </div>
-                  <div class="small font-weight-bold text-success">
-                    Rp ${totalDiscounted.toLocaleString('id-ID')}
-                  </div>
-                `
-                : `<div class="text-brown small">Rp ${totalOriginal.toLocaleString('id-ID')}</div>`
+              item.diskonLabel
+                ? `<span class="badge bg-danger text-white ms-1 ml-2" style="font-size:0.7rem;">${escapeHTML(item.diskonLabel)}</span>`
+                : ""
             }
           </div>
+
+          ${
+            item.finalPrice < item.price
+              ? `
+                <div class="small text-muted">
+                  <s>Rp ${totalOriginal.toLocaleString('id-ID')}</s>
+                </div>
+                <div class="small font-weight-bold text-success">
+                  Rp ${totalDiscounted.toLocaleString('id-ID')}
+                </div>
+              `
+              : `<div class="text-brown small">Rp ${totalOriginal.toLocaleString('id-ID')}</div>`
+          }
         </div>
-        <div class="d-flex align-items-center ml-auto">
-          <button onclick="decreaseQty(${item.id})" class="btn btn-outline-secondary btn-sm"
-            style="width:32px;height:32px;display:flex;align-items:center;justify-content:center;border-radius:6px;">-</button>
-          <span class="px-2 font-weight-bold">${item.qty}</span>
-          <button onclick="addToCart(${item.id})" class="btn btn-outline-secondary btn-sm"
-            style="width:32px;height:32px;display:flex;align-items:center;justify-content:center;border-radius:6px;">+</button>
-        </div>
+      </div>
+      <div class="d-flex align-items-center ml-auto">
+        <button onclick="decreaseQty(${item.id})" class="btn btn-outline-secondary btn-sm"
+          style="width:32px;height:32px;display:flex;align-items:center;justify-content:center;border-radius:6px;">-</button>
+        <span class="px-2 font-weight-bold">${item.qty}</span>
+        <button onclick="addToCart(${item.id})" class="btn btn-outline-secondary btn-sm"
+          style="width:32px;height:32px;display:flex;align-items:center;justify-content:center;border-radius:6px;">+</button>
+      </div>
+
       `;
 
       cartItems.appendChild(row);
@@ -451,13 +457,7 @@
     renderProducts(activeCategory, searchTerm);
   });
 
-  // Toggle menu
-  document.getElementById("menuToggle").addEventListener("click", () => {
-    document.getElementById("offcanvasMenu").classList.add("show");
-  });
-  document.getElementById("closeMenu").addEventListener("click", () => {
-    document.getElementById("offcanvasMenu").classList.remove("show");
-  });
+  
 
   // Event kategori
   document.querySelectorAll(".category-btn").forEach(btn => {

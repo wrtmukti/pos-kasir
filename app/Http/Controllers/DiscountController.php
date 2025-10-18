@@ -35,6 +35,16 @@ class DiscountController extends Controller
             'end_date' => 'required|date|after_or_equal:start_date',
             'status' => 'required|in:active,inactive',
         ]);
+        $product = Product::findOrFail($request->id_product);
+
+        // Jika type_diskon == 1 (potongan nominal), pastikan value ≤ harga produk
+        if ($request->type_diskon == 1 && $request->value > $product->price) {
+            return back()->withErrors(['value' => 'Potongan harga tidak boleh melebihi harga produk.'])->withInput();
+        }
+        // Jika type_diskon == 0 (persen), pastikan value tidak melebihi harga produk
+        if ($request->type_diskon == 0 && $request->value > 100) {
+            return back()->withErrors(['value' => 'Diskon persentase tidak boleh lebih besar dari 100%.'])->withInput();
+        }
 
         Discount::create($validated);
         logActivity('menambahkan Diskon', "Pengguna menambahkan diskon: {$request->keterangan}");
@@ -58,6 +68,16 @@ class DiscountController extends Controller
             'end_date' => 'required|date|after_or_equal:start_date',
             'status' => 'required|in:active,inactive',
         ]);
+        $product = Product::findOrFail($request->id_product);
+
+        // Jika type_diskon == 1 (potongan nominal), pastikan value ≤ harga produk
+        if ($request->type_diskon == 1 && $request->value > $product->price) {
+            return back()->withErrors(['value' => 'Potongan harga tidak boleh melebihi harga produk.'])->withInput();
+        }
+        // Jika type_diskon == 0 (persen), pastikan value tidak melebihi harga produk
+        if ($request->type_diskon == 0 && $request->value > 100) {
+            return back()->withErrors(['value' => 'Diskon persentase tidak boleh lebih besar dari 100%.'])->withInput();
+        }
 
         $diskon->update($validated);
         logActivity('mengupdate Diskon', "Pengguna mengupdate diskon: {$request->keterangan}");

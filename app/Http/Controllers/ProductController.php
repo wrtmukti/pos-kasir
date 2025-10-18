@@ -17,7 +17,31 @@ class ProductController extends Controller
     public function food()
     {
         $categories = Category::where('category_type', 0)->orderBy('category_name', 'asc')->get();
-        $products = Product::with('stocks')->orderBy('created_at', 'desc')->where('type', 0)->get();
+        $products = Product::with(['stocks' => function ($q) {
+            $q->select('stocks.id', 'stocks.name', 'stocks.amount');
+        }])
+            ->where('type', 0)
+            ->orderBy('name', 'asc')
+            ->get()
+            ->map(function ($product) {
+                $jumlahBisaDibuat = [];
+                $sisaBahan = [];
+
+                foreach ($product->stocks as $stock) {
+                    $need = $stock->pivot->quantity;
+                    $have = $stock->amount;
+
+                    if ($need > 0) {
+                        $jumlahBisaDibuat[] = floor($have / $need);
+                        $sisaBahan[$stock->name] = $have % $need; // ← modulus untuk sisa bahan
+                    }
+                }
+
+                $product->remaining_stock = count($jumlahBisaDibuat) ? min($jumlahBisaDibuat) : 0;
+                $product->sisa_bahan = $sisaBahan;
+
+                return $product;
+            });
         $stocks = Stock::orderby('name', 'asc')->where('type', '0')->get();
 
         return view('admin.product.food', compact('categories', 'products', 'stocks'));
@@ -25,7 +49,31 @@ class ProductController extends Controller
     public function drink()
     {
         $categories = Category::where('category_type', 1)->orderBy('category_name', 'asc')->get();
-        $products = Product::with('stocks')->orderBy('name', 'asc')->where('type', 1)->get();
+        $products = Product::with(['stocks' => function ($q) {
+            $q->select('stocks.id', 'stocks.name', 'stocks.amount');
+        }])
+            ->where('type', 1)
+            ->orderBy('name', 'asc')
+            ->get()
+            ->map(function ($product) {
+                $jumlahBisaDibuat = [];
+                $sisaBahan = [];
+
+                foreach ($product->stocks as $stock) {
+                    $need = $stock->pivot->quantity;
+                    $have = $stock->amount;
+
+                    if ($need > 0) {
+                        $jumlahBisaDibuat[] = floor($have / $need);
+                        $sisaBahan[$stock->name] = $have % $need; // ← modulus untuk sisa bahan
+                    }
+                }
+
+                $product->remaining_stock = count($jumlahBisaDibuat) ? min($jumlahBisaDibuat) : 0;
+                $product->sisa_bahan = $sisaBahan;
+
+                return $product;
+            });
         $stocks = Stock::orderby('name', 'asc')->where('type', '1')->get();
 
         return view('admin.product.drink', compact('categories', 'products', 'stocks'));

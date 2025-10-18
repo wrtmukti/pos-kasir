@@ -63,7 +63,7 @@
                   class="form-select @error('voucher_type') is-invalid @enderror" required>
             <option value="">-- Pilih Jenis Voucher --</option>
             <option value="0" {{ old('voucher_type', $voucher->voucher_type ?? '') == 0 ? 'selected' : '' }}>Persentase (%)</option>
-            <option value="1" {{ old('voucher_type', $voucher->voucher_type ?? '') == 1 ? 'selected' : '' }}>Potongan Harga (Rp)</option>
+            {{-- <option value="1" {{ old('voucher_type', $voucher->voucher_type ?? '') == 1 ? 'selected' : '' }}>Potongan Harga (Rp)</option> --}}
           </select>
           @error('voucher_type')
             <div class="invalid-feedback">{{ $message }}</div>

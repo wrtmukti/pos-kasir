@@ -10,7 +10,7 @@
     </div>
 
     <div class="mt-4">
-        <button onclick="printQr()" class="btn btn-success">
+        <button onclick="printQr()" class="btn btn-primary">
             <i class="bi bi-printer-fill me-1"></i> Cetak QR
         </button>
         <a href="{{ route('meja.index') }}" class="btn btn-secondary ms-2">

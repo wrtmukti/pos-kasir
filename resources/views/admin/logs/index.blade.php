@@ -89,7 +89,7 @@
                         <td data-label="Tanggal & Waktu" class="log-value" style="padding: 12px; white-space: nowrap;">{{ $log->created_at->format('d/m/Y H:i:s') }}</td>
                         <td data-label="Pengguna" class="log-value" style="padding: 12px; white-space: nowrap;">
                             <span class="badge-style" style="background-color: #e0e0e0; padding: 4px 8px; border-radius: 3px; font-size: 0.9em;">
-                                {{ $log->user?->name ?? 'Sistem/Anonim' }}
+                                {{ $log->user->name ?? 'Sistem/Anonim' }}
                             </span>
                         </td>
                         <td data-label="Aksi" class="log-value" style="padding: 12px;">

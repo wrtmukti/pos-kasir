@@ -342,8 +342,6 @@
                   $potongan += ($order->voucher->value);
                 }
               }
-              
-              
               ?>
               @endforeach
               <form action="/admin/transaction/payment" method="post">

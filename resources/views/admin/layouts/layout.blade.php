@@ -179,27 +179,24 @@
           <li class="nav-item">
             <a class="nav-link" href="/admin/">
               <i class="menu-icon mdi mdi-account "></i>
-              <span class="menu-title">Profile</span>
+              <span class="menu-title">Welcome</span>
             </a>
           </li>
+          
           <li class="nav-item">
-            <a class="nav-link" href="/admin/logs/">
-              <i class="menu-icon mdi mdi-book-multiple "></i>
-              <span class="menu-title">Logs</span>
+            <a class="nav-link" data-bs-toggle="collapse" href="#Toko" aria-expanded="false" aria-controls="Toko">
+              <i class="menu-icon mdi mdi-store "></i>
+              <span class="menu-title">Toko</span>
+              <i class="menu-arrow"></i> 
             </a>
+            <div class="collapse" id="Toko">
+              <ul class="nav flex-column sub-menu">
+                <li class="nav-item"> <a class="nav-link" href="/admin/sliders/">Banner</a></li>
+                <li class="nav-item"> <a class="nav-link" href="/admin/meja/">Meja</a></li>
+              </ul>
+            </div>
           </li>
-          <li class="nav-item">
-            <a class="nav-link" href="/admin/meja/">
-              <i class="menu-icon mdi mdi-coffee"></i>
-              <span class="menu-title">Tables</span>
-            </a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" href="/admin/sliders/">
-              <i class="menu-icon mdi mdi-account "></i>
-              <span class="menu-title">Banner</span>
-            </a>
-          </li>
+          
           <li class="nav-item nav-category">Pesanan dan Transaksi</li>
           <li class="nav-item">
             <a class="nav-link" data-bs-toggle="collapse" href="#Pesanan" aria-expanded="false" aria-controls="Pesanan">
@@ -210,9 +207,9 @@
             <div class="collapse" id="Pesanan">
               <ul class="nav flex-column sub-menu">
                 <li class="nav-item"> <a class="nav-link" href="/admin/order/create">Buat Pesanan</a></li>
-                <li class="nav-item"> <a class="nav-link" href="/admin/order/manual">Pesanan Manual</a></li>
-                <li class="nav-item"> <a class="nav-link" href="/admin/order/online">Pesanan Online</a></li>
-                <li class="nav-item"> <a class="nav-link" href="/admin/table">Meja</a></li>
+                <li class="nav-item"> <a class="nav-link" href="/admin/order/manual">Pesanan Kasir</a></li>
+                <li class="nav-item"> <a class="nav-link" href="/admin/order/online">Pesanan Pelanggan</a></li>
+                {{-- <li class="nav-item"> <a class="nav-link" href="/admin/table">Meja</a></li> --}}
               </ul>
             </div>
           </li>
@@ -226,9 +223,6 @@
               <ul class="nav flex-column sub-menu">
                 <li class="nav-item"> <a class="nav-link" href="/admin/transaction/">Riwayat Transaksi</a></li>
                 <li class="nav-item"> <a class="nav-link" href="/admin/transaction/summary/1">Rekap Kas</a></li>
-                @if (Auth::user()->role == 0)
-                <li class="nav-item"> <a class="nav-link" href="/admin/transaction/report/0">Laporan Penjualan</a></li>
-                @endif
               </ul>
             </div>
           </li>
@@ -250,24 +244,24 @@
           </li>
           <li class="nav-item">
             <a class="nav-link" href="/admin/stock/">
-              <i class="mdi  mdi mdi-folder-plus  menu-icon"></i>
+              <i class="mdi mdi-food-variant menu-icon"></i>
               <span class="menu-title">Stok</span>
             </a>
           </li>
 
           {{-- OPERATOR --}}
           @if (Auth::user()->role == 1)
-          <li class="nav-item nav-category">Diskon & Voucher</li>
+          <li class="nav-item nav-category">Promo</li>
           <li class="nav-item">
             <a class="nav-link" data-bs-toggle="collapse" href="#disc" aria-expanded="false" aria-controls="disc">
-              <i class="menu-icon mdi  mdi mdi-shopping  "></i>
-              <span class="menu-title">Diskon & Voucher</span>
+              <i class="menu-icon mdi mdi-percent  "></i>
+              <span class="menu-title">Diskon dan Voucer</span>
               <i class="menu-arrow"></i> 
             </a>
             <div class="collapse" id="disc">
               <ul class="nav flex-column sub-menu">
-                <li class="nav-item"> <a class="nav-link" href="/admin/operator/discount">Discount</a></li>
-                <li class="nav-item"> <a class="nav-link" href="/admin/operator/voucher">Voucher</a></li>
+                <li class="nav-item"> <a class="nav-link" href="/admin/operator/discount">Diskon</a></li>
+                <li class="nav-item"> <a class="nav-link" href="/admin/operator/voucher">Voucer</a></li>
               </ul>
             </div>
           </li>
@@ -275,18 +269,24 @@
           <li class="nav-item nav-category">Laporan</li>
           <li class="nav-item">
             <a class="nav-link" data-bs-toggle="collapse" href="#operator" aria-expanded="false" aria-controls="operator">
-              <i class="menu-icon mdi  mdi mdi-shopping  "></i>
+              <i class="menu-icon mdi mdi-file-document  "></i>
               <span class="menu-title">Laporan</span>
               <i class="menu-arrow"></i> 
             </a>
             <div class="collapse" id="operator">
               <ul class="nav flex-column sub-menu">
-                <li class="nav-item"> <a class="nav-link" href="/admin/operator/report/0">Laporan Penjualan</a></li>
+                {{-- <li class="nav-item"> <a class="nav-link" href="/admin/operator/report/0">Laporan Penjualan</a></li> --}}
+                <li class="nav-item"> <a class="nav-link" href="/admin/operator/reports/">Laporan Penjualan</a></li>
                 <li class="nav-item"> <a class="nav-link" href="/admin/operator/customer">Data Pelanggan</a></li>
                 <li class="nav-item"> <a class="nav-link" href="/admin/operator/employee">Data Karyawan</a></li>
-                <li class="nav-item"> <a class="nav-link" href="/admin/operator/reports/">Laporan Sale</a></li>
               </ul>
             </div>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="/admin/logs/">
+              <i class="menu-icon mdi mdi-history "></i>
+              <span class="menu-title">Logs</span>
+            </a>
           </li>
           @endif
           {{-- OPERATOR --}}

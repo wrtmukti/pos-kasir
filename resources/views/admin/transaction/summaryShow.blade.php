@@ -15,7 +15,30 @@
 
   <div class="row my-3">
     <h2 class="fw-bold text-center">Rekap Kas</h2>
-    <p class="fw-bold text-center">{{ $date }}</p>
+    @if (strlen($date) > 7)
+      <p class="fw-bold text-center">{{ \Carbon\Carbon::parse($date)->translatedFormat('d F Y') }}</p>
+    @else
+        @php
+            // contoh variabel $date = "10-2025"
+            $monthNames = [
+                '01' => 'Januari',
+                '02' => 'Februari',
+                '03' => 'Maret',
+                '04' => 'April',
+                '05' => 'Mei',
+                '06' => 'Juni',
+                '07' => 'Juli',
+                '08' => 'Agustus',
+                '09' => 'September',
+                '10' => 'Oktober',
+                '11' => 'November',
+                '12' => 'Desember'
+            ];
+
+            [$month, $year] = explode('-', $date);
+        @endphp
+        <p class="fw-bold text-center"> {{ $monthNames[$month] }} {{ $year }}</p>
+    @endif
   </div>
 
   @if ($transactions->count() == 0)
@@ -74,15 +97,15 @@
                 <h4 class=" text-center text-primary">Pemasukan</h4>
               </div>
               <div class="col-6 col-lg-3 col-md-3">
-                <p class="text-center text-dark">Cash : Rp. {{ $income_cash }},- </p>
+                <p class="text-center text-dark">Cash : Rp. {{ number_format($income_cash, 0, ',', '.') }},- </p>
               </div>
             </div>
             <div class="row justify-content-center ">
               <div class="col-6 col-lg-3 col-md-3">
-                <p class="text-center text-dark"> Rp . {{ $income }},-</p>
+                <p class="text-center text-dark"> Rp . {{ number_format($income, 0, ',', '.') }},-</p>
               </div>
               <div class="col-6 col-lg-3 col-md-3">
-                <p class="text-center text-dark">Debit : Rp. {{ $income_debit }},-</p>
+                <p class="text-center text-dark">Debit : Rp. {{ number_format($income_debit, 0, ',', '.') }},-</p>
               </div>
             </div>
           </div>
@@ -93,21 +116,39 @@
                 <h4 class="text-center text-danger">Pengeluaran</h4>
               </div>
               <div class="col-6 col-lg-3 col-md-3">
-                <p class="text-center text-dark">Cash : Rp. {{ $outcome_cash }},- </p>
+                <p class="text-center text-dark">Cash : Rp. {{ number_format($outcome_cash, 0, ',', '.') }},- </p>
               </div>
             </div>
             <div class="row justify-content-center ">
               <div class="col-6 col-lg-3 col-md-3">
-                <p class="text-center text-dark"> Rp . {{ $outcome }},-</p>
+                <p class="text-center text-dark"> Rp . {{ number_format($outcome, 0, ',', '.') }},-</p>
               </div>
               <div class="col-6 col-lg-3 col-md-3">
-                <p class="text-center text-dark">Debit : Rp. {{ $outcome_debit }},-</p>
+                <p class="text-center text-dark">Debit : Rp. {{ number_format($outcome_debit, 0, ',', '.') }},-</p>
+              </div>
+            </div>
+          </div>
+          <div class="card-header bg-secondary border-primary">
+            <div class="row justify-content-center ">
+              <div class="col-6 col-lg-3 col-md-3">
+                <h4 class="text-center text-light fw-bold">Saldo</h4>
+              </div>
+              <div class="col-6 col-lg-3 col-md-3">
+                <p class="text-center text-light">Cash : Rp.{{ number_format($income_cash - $outcome_cash, 0, ',', '.') }},- </p>
+              </div>
+            </div>
+            <div class="row justify-content-center ">
+              <div class="col-6 col-lg-3 col-md-3">
+                <p class="text-center text-light fw-bold"> Rp. {{ number_format($income - $outcome, 0, ',', '.') }},-</p>
+              </div>
+              <div class="col-6 col-lg-3 col-md-3">
+                <p class="text-center text-light">Debit : Rp. {{ number_format($income_debit - $outcome_debit, 0, ',', '.') }},-</p>
               </div>
             </div>
           </div>
           {{-- Total --}}
-          <div class="card-header bg-secondary">
-            <h4 class="text-center text-light">TOTAL</h4>
+          {{-- <div class="card-header bg-secondary">
+            <h4 class="text-center text-light">Saldo</h4>
             <p class="text-center text-light"> Total : Rp . {{ $income - $outcome }},-</p>
             <div class="row justify-content-center ">
               <div class="col-6 col-lg-3 col-md-3">
@@ -117,7 +158,7 @@
                 <p class="text-center text-light">Debit : Rp. {{$income_debit - $outcome_debit }},-</p>
               </div>
             </div>
-          </div>
+          </div> --}}
           
         </div>
       </div>
@@ -140,7 +181,7 @@
                   <tr>
                     {{-- <td class="text-center fw-bold "><a href="/admin/transaction/{{ $data->id }}" class="nav-link text-dark">{{ $loop->iteration }}</a></td> --}}
                     <td class="text-center">
-                      <a href="/admin/transaction/{{ $data->id }}" class="nav-link  text-dark">{{ $data->updated_at->format("d M Y") }}</a>
+                      <a href="/admin/transaction/{{ $data->id }}" class="nav-link  text-dark">{{ \Carbon\Carbon::parse($data->updated_at)->translatedFormat('d F Y') }}</a>
                       <a href="/admin/transaction/{{ $data->id }}" class="nav-link  text-dark">{{ $data->updated_at->format("H:i") }}</a>
                     </td>
                     @if ($data->payment_status !== null)

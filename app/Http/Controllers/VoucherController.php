@@ -66,6 +66,11 @@ class VoucherController extends Controller
             if (!empty($validated['endtime'])) {
                 $endtime = Carbon::parse($validated['endtime'])->toDateTimeString();
             }
+            // Jika type_diskon == 0 (persen), pastikan value tidak melebihi harga produk
+            if ($request->voucher_type == 0 && $request->value > 100) {
+                return back()->withErrors(['value' => 'voucher persentase tidak boleh lebih besar dari 100%.'])->withInput();
+            }
+
 
             // simpan voucher
             $voucher = Voucher::create([
@@ -99,6 +104,7 @@ class VoucherController extends Controller
 
     public function update(Request $request, $id)
     {
+        // dd($request);
         $voucher = Voucher::findOrFail($id);
 
         $request->validate([
@@ -111,6 +117,10 @@ class VoucherController extends Controller
             'starttime' => 'nullable|date',
             'endtime' => 'nullable|date|after_or_equal:starttime',
         ]);
+        // Jika type_diskon == 0 (persen), pastikan value tidak melebihi harga produk
+        if ($request->voucher_type == 0 && $request->value > 100) {
+            return back()->withErrors(['value' => 'Voucher persentase tidak boleh lebih besar dari 100%.'])->withInput();
+        }
 
         $voucher->update($request->all());
         logActivity('mengupdate Voucher', "Pengguna mengupdate voucher: {$voucher->name}");

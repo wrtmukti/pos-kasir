@@ -54,13 +54,13 @@
           @else
             @foreach ($product as $data)  
               <div class="col-md-3 mb-3">
-                <div class="card h-100 shadow-sm" data-bs-toggle="modal" data-bs-target="#editModal{{ $data->id }}" style="cursor:pointer;">
+                <div class="card h-100 shadow-sm" >
                   <div class="card-img-wrapper">
                     <img src="{{ asset('images/product/' . $data->image) }}" class="card-img-top imgProduct" alt="...">
                   </div>
                   <div class="card-body">
                     <p class="fw-bold mb-1">{{ $data->name }}</p>
-                    <p class="card-text mb-1">Stok ({{ $data->stocks->min('amount') }})</p> 
+                    <p class="card-text mb-1">Stok ({{ $data->remaining_stock }})</p> 
                     <p class="card-text fw-semibold text-danger">Rp. {{ $data->price }},-</p>
                   </div>
                   <div class="card-footer bg-light">

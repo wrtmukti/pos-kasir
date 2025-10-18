@@ -1,6 +1,6 @@
 @extends('admin.layouts.layout')
 @section('content')
-<h2>Edit Slider</h2>
+<h2>Edit Banner</h2>
 
 <form action="{{ route('admin.sliders.update', $slider->id) }}" method="POST" enctype="multipart/form-data">
   @csrf

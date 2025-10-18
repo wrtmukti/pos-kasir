@@ -56,7 +56,30 @@
                   <tr>
                     {{-- <td class="text-center fw-bold "><a href="/admin/transaction/{{ $data->id }}" class="nav-link text-dark">{{ $loop->iteration }}</a></td> --}}
                     <td class="text-center">
-                      <a href="/admin/transaction/summary/show/{{ $date }}" class="nav-link  text-dark">{{ $date }}</a>
+                      @if (strlen($date) > 7)
+                      <a href="/admin/transaction/summary/show/{{ $date }}" class="nav-link  text-dark"> {{ \Carbon\Carbon::parse($date)->translatedFormat('d F Y') }}</a>
+                      @else
+                        @php
+                            // contoh variabel $date = "10-2025"
+                            $monthNames = [
+                                '01' => 'Januari',
+                                '02' => 'Februari',
+                                '03' => 'Maret',
+                                '04' => 'April',
+                                '05' => 'Mei',
+                                '06' => 'Juni',
+                                '07' => 'Juli',
+                                '08' => 'Agustus',
+                                '09' => 'September',
+                                '10' => 'Oktober',
+                                '11' => 'November',
+                                '12' => 'Desember'
+                            ];
+
+                            [$month, $year] = explode('-', $date);
+                        @endphp
+                      <a href="/admin/transaction/summary/show/{{ $date }}" class="nav-link  text-dark"> {{ $monthNames[$month] }} {{ $year }}</a>
+                      @endif
                     </td>
                     <td class="text-center">
                       <a href="/admin/transaction/summary/show/{{ $date }}" class="nav-link  text-dark">{{ $data->count() }} Transaksi</a>

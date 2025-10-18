@@ -248,6 +248,10 @@ class OrderController extends Controller
             case '4':
                 # pesanan ditolak
                 $order = Order::findOrFail($id);
+                if ($order->voucher_id !== null) {
+                    $voucher = Voucher::findorfail($order->voucher_id);
+                    $voucher->increment('balance');
+                }
                 $order->update([
                     'status' => $request->status,
                     'note' => $request->note,
@@ -260,7 +264,7 @@ class OrderController extends Controller
         }
 
         if ($request->status == 4) {
-            return redirect()->to('/admin');
+            return redirect()->to('admin/order/online/' . $order->customer_id);
         }
         $order = Order::findOrFail($id);
         if ($order->customer_id === null) {

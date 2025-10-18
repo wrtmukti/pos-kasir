@@ -7,13 +7,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 
 
-Route::get('/', [App\Http\Controllers\GuestController::class, 'index'])->name('home');
-Route::post('/order/store', [App\Http\Controllers\GuestController::class, 'store']);
-Route::post('/orders', [App\Http\Controllers\GuestController::class, 'checkout']);
-Route::get('/checkout/review', [App\Http\Controllers\GuestController::class, 'review'])->name('checkout.review'); // halaman isi note & pembayaran
-Route::post('/submits', [App\Http\Controllers\GuestController::class, 'submit'])->name('checkout.submit'); // simpan ke DB
-Route::get('/orders/status', [App\Http\Controllers\GuestController::class, 'orderStatus'])->name('order.status');
-Route::post('/check-voucher', [App\Http\Controllers\GuestController::class, 'check']);
+
 
 
 Auth::routes();
@@ -90,8 +84,8 @@ Route::prefix('admin')->middleware('auth')->group(function () {
         Route::get('/voucher/create', [App\Http\Controllers\VoucherController::class, 'create'])->name('voucher.create');
         Route::post('/voucher/store', [App\Http\Controllers\VoucherController::class, 'store'])->name('voucher.store');
         Route::get('/voucher/edit/{id}', [App\Http\Controllers\VoucherController::class, 'edit'])->name('voucher.edit');
-        Route::post('/voucher/update/{id}', [App\Http\Controllers\VoucherController::class, 'update'])->name('voucher.update');
-        Route::post('/voucher/delete/{id}', [App\Http\Controllers\VoucherController::class, 'destroy'])->name('voucher.destroy');
+        Route::put('/voucher/update/{id}', [App\Http\Controllers\VoucherController::class, 'update'])->name('voucher.update');
+        Route::delete('/voucher/delete/{id}', [App\Http\Controllers\VoucherController::class, 'destroy'])->name('voucher.destroy');
 
         Route::get('/discount', [DiscountController::class, 'index'])->name('discount.index');          // daftar semua diskon
         Route::get('/discount/create', [DiscountController::class, 'create'])->name('discount.create'); // form tambah
@@ -116,3 +110,11 @@ Route::prefix('admin')->middleware('auth')->group(function () {
         });
     });
 });
+
+Route::get('/{table_id}', [App\Http\Controllers\GuestController::class, 'index'])->name('home');
+Route::post('/order/store', [App\Http\Controllers\GuestController::class, 'store']);
+Route::post('/orders', [App\Http\Controllers\GuestController::class, 'checkout'])->name('checkout.checkout');
+Route::get('/checkout/review', [App\Http\Controllers\GuestController::class, 'review'])->name('checkout.review'); // halaman isi note & pembayaran
+Route::post('/submits', [App\Http\Controllers\GuestController::class, 'submit'])->name('checkout.submit'); // simpan ke DB
+Route::get('/orders/status/{table_id}', [App\Http\Controllers\GuestController::class, 'orderStatus'])->name('order.status');
+Route::post('/check-voucher', [App\Http\Controllers\GuestController::class, 'check']);

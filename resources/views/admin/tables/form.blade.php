@@ -79,7 +79,7 @@
                             <a href="{{ route('meja.index') }}" class="btn btn-outline-secondary">
                                 <i class="bi bi-arrow-left"></i> Kembali
                             </a>
-                            <button type="submit" class="btn btn-success me-md-2">
+                            <button type="submit" class="btn btn-primary me-md-2">
                                 <i class="bi bi-save"></i> 
                                 {{ isset($meja) ? 'Simpan Perubahan' : 'Simpan Meja' }}
                             </button>

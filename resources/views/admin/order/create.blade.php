@@ -190,6 +190,7 @@ const updateTotals = () => {
   totalHidden.value = total;
   totalPriceDisplay.value = "Total : Rp. " + total.toLocaleString("id-ID");
   totalPayment.value = "Rp. " + total.toLocaleString("id-ID");
+  total_Payment.value = total;
 };
 
 const updateShoppingCartHTML = () => {

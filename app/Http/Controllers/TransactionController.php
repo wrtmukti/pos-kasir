@@ -26,7 +26,7 @@ class TransactionController extends Controller
     }
     public function payment(Request  $request)
     {
-        dd($request->all());
+        // dd($request->all());
         if ($request->payment_method == 'cash') {
             $cash = $request->value;
             $debit = 0;
@@ -45,28 +45,79 @@ class TransactionController extends Controller
             'kembalian' => $kembalian,
             'note' => "Produk Terjual",
         ]);
-
+        $totalRevenue = 0;
 
         if ($request->order_type == 1) {
-            $order = Order::find($request->order_id);
+            $order = Order::findOrFail($request->order_id);
+            // dd($request->all(),$order);
             $order->update([
                 'status' => 3,
                 'transaction_id' => $transaction->id,
             ]);
             //deva
-            foreach ($order->products as $product) {
-                SalesSummary::create([
-                    'transaction_date' => now()->toDateString(),
-                    'transaction_id' => $transaction->id,
-                    'order_id' => $order->id,
-                    'product_id' => $product->id,
-                    'category_id' => $product->category_id,
-                    'quantity_sold' => $product->pivot->quantity,
-                    'unit_price' => $product->price,
-                    'total_revenue' => $product->price * $product->pivot->quantity,
-                    'payment_method' => $this->getPaymentMethod($transaction),
-                ]);
+            $voucherDiscount = 0;
+
+            // $totalRevenue = 0;
+
+            // $order->update(['status' => 3, 'transaction_id' => $transaction->id]);
+            // Jika ada voucher_id, ambil voucher persentase global
+            if ($order->voucher_id) {
+                $voucher = Voucher::find($order->voucher_id);
+                if ($voucher && $voucher->voucher_type == '0') {
+                    // dd($voucher->value);
+                    $voucherDiscount = $voucher->value; // nilai dalam persen
+                }
+                // dd($voucher,$voucher->voucher_type,"if tidak bekerja");
             }
+            foreach ($order->products as $product) {
+                // dd($order->products);
+                $activeDiscount = $product->diskons->first();
+                $originalPrice = $product->price;
+                $discountedPrice = $originalPrice;
+
+                if ($activeDiscount) {
+                    if ($activeDiscount->type_diskon == 0) {
+                        $discountedPrice -= ($originalPrice * $activeDiscount->value / 100);
+                    } elseif ($activeDiscount->type_diskon == 1) {
+                        $discountedPrice -= $activeDiscount->value;
+                    }
+                }
+
+                if ($voucherDiscount > 0) {
+                    $discountedPrice -= ($discountedPrice * $voucherDiscount / 100);
+                }
+
+                $discountedPrice = max($discountedPrice, 0);
+
+                $subtotal = $discountedPrice * $product->pivot->quantity;
+                $totalRevenue += $subtotal;
+
+                $sales = SalesSummary::create([
+                    'transaction_date'     => now()->toDateString(),
+                    'transaction_id'       => $transaction->id,
+                    'order_id'             => $order->id,
+                    'product_id'           => $product->id,
+                    'category_id'          => $product->category_id,
+                    'quantity_sold'        => $product->pivot->quantity,
+                    'unit_price'           => $originalPrice,
+                    'subtotal'             => $originalPrice * $product->pivot->quantity,
+                    'discount_id' => $activeDiscount ? $activeDiscount->id : null,
+                    'discount_amount'      => $activeDiscount
+                        ? ($activeDiscount->type_diskon == 0
+                            ? $originalPrice * $activeDiscount->value / 100
+                            : $activeDiscount->value)
+                        : 0,
+                    'price_after_discount' => $discountedPrice,
+                    'voucher_id'           => $order->voucher_id,
+                    'voucher_percent'      => $voucherDiscount,
+                    'voucher_applied'      => $order->voucher_id ? 1 : 0,
+                    'total_revenue'        => $subtotal,
+                    'payment_method'       => $this->getPaymentMethod($transaction),
+                ]);
+                $sales->refresh();
+                // dd($sales, "dd asat sales sumaary", $subtotal, $discountedPrice, "akhir", $originalPrice, "total revenue : ". $totalRevenue);
+            }
+
             //deva end
 
             return redirect()->to('admin/order/manual/' . $request->order_id);
@@ -82,7 +133,7 @@ class TransactionController extends Controller
                 }])
                 ->get();
 
-            $totalRevenue = 0;
+
 
             foreach ($orders as $order) {
                 $voucherDiscount = 0;
@@ -128,7 +179,7 @@ class TransactionController extends Controller
                         'quantity_sold'        => $product->pivot->quantity,
                         'unit_price'           => $originalPrice,
                         'subtotal'             => $originalPrice * $product->pivot->quantity,
-                        'discount_id'          => $activeDiscount?->id,
+                        'discount_id' => $activeDiscount ? $activeDiscount->id : null,
                         'discount_amount'      => $activeDiscount
                             ? ($activeDiscount->type_diskon == 0
                                 ? $originalPrice * $activeDiscount->value / 100
