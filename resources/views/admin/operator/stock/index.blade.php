@@ -17,12 +17,13 @@
     <h2 class="fw-bold text-center">Stok</h2>
   </div>
 
+@if (Auth::user()->role == 1)
   <div class="row my-3">
     <div class="col-6">
       <a href="/admin/stock/create" class="btn btn-primary">+ Stok</a>
     </div>
   </div>
-
+@endif
 
 
   @if ($stocks->count() == 0)
@@ -84,9 +85,7 @@
                                 
                         @endswitch
                       </a>
-                      @if (Auth::user()->role == 1)
-                      <a href="/admin/operator/stock/edit/{{ $data->id }}" class="btn btn-primary">Tambah</a>
-                      @endif
+                      
                     </td>
                     <td class="text-center d-none d-sm-table-cell">
                       <a  class="nav-link  text-dark">
@@ -99,11 +98,12 @@
                     </td>
                     @if (Auth::user()->role == 1)
                     <td class="text-center d-none d-sm-table-cell">
-                      <form action="/admin/operator/stock/delete/{{$data->id}}" method="post" style="text-decoration: none">
+                      <a href="/admin/operator/stock/edit/{{ $data->id }}" class="btn btn-warning btn-sm" >Edit</a>
+                      <form action="/admin/operator/stock/delete/{{$data->id}}" method="post" style="text-decoration: none"  class="d-inline">
                         @csrf
                         @method('DELETE')
                         <input type="hidden" name="{{$data->id}}" value="DELETE">
-                        <button type="sumbit" class="btn btn-danger" onclick="return confirm('Yakin ingin menghapus produk?');">
+                        <button type="sumbit" class="btn btn-danger btn-sm" onclick="return confirm('Yakin ingin menghapus produk?');">
                           Hapus</i>
                         </button>
                       </form> 

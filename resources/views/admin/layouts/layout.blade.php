@@ -11,25 +11,21 @@
 
   <!-- plugins:css -->
   {{-- <link rel="stylesheet" href="{{ asset('vendor/cart/css/bootstrap.min.css') }}"> --}}
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-+0n0xVW2eSR5OomGNYDnhzAbDsOXxcvSN1TPprVMTNDbiYZCxYbOOl7+AMvyTG2x" crossorigin="anonymous">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.14.0-beta2/css/bootstrap-select.min.css" integrity="sha512-mR/b5Y7FRsKqrYZou7uysnOdCIJib/7r5QeJMFvLNHNhtye3xJp1TdJVPLtetkukFn227nKpXD9OjUc09lx97Q==" crossorigin="anonymous" referrerpolicy="no-referrer" />
-  <link rel="stylesheet" href=" {{ asset('vendor/star-admin/template/vendors/feather/feather.css') }}">
+  {{-- <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-+0n0xVW2eSR5OomGNYDnhzAbDsOXxcvSN1TPprVMTNDbiYZCxYbOOl7+AMvyTG2x" crossorigin="anonymous"> --}}
+  <link rel="stylesheet" href="{{ asset('vendor/bootstrap-5.0.2-dist/css/bootstrap.min.css') }}">
+  {{-- <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.14.0-beta2/css/bootstrap-select.min.css" integrity="sha512-mR/b5Y7FRsKqrYZou7uysnOdCIJib/7r5QeJMFvLNHNhtye3xJp1TdJVPLtetkukFn227nKpXD9OjUc09lx97Q==" crossorigin="anonymous" referrerpolicy="no-referrer" /> --}}
+  <link rel="stylesheet" href="{{ asset('vendor/star-admin/template/vendors/feather/feather.css') }}">
   <link rel="stylesheet" href="{{ asset('vendor/star-admin/template/vendors/mdi/css/materialdesignicons.min.css') }}">
   <link rel="stylesheet" href="{{ asset('vendor/star-admin/template/vendors/ti-icons/css/themify-icons.css') }}">
   <link rel="stylesheet" href="{{ asset('vendor/star-admin/template/vendors/typicons/typicons.css') }}">
   <link rel="stylesheet" href="{{ asset('vendor/star-admin/template/vendors/simple-line-icons/css/simple-line-icons.css') }}">
   <link rel="stylesheet" href="{{ asset('vendor/star-admin/template/vendors/css/vendor.bundle.base.css') }}">
-  <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.12.1/css/jquery.dataTables.css">
-  
-  <!-- endinject -->
   <!-- Plugin css for this page -->
   <link rel="stylesheet" href="{{ asset('vendor/star-admin/template/vendors/datatables.net-bs4/dataTables.bootstrap4.css') }}">
   <link rel="stylesheet" href="{{ asset('vendor/star-admin/template/js/select.dataTables.min.css') }}">
   <link rel="stylesheet" href="{{ asset('css/admin.css') }}">
   <link rel="stylesheet" href="{{ asset('css/tabslider.css') }}">
-  <link rel="stylesheet" href="https://cdn.datatables.net/1.12.1/css/dataTables.bootstrap4.min.css">
-
-  
+  <link rel="stylesheet" href="{{ asset('vendor/datatables-1.12.1/dataTables.bootstrap5.min.css') }}"> 
   <!-- End plugin css for this page -->
   <!-- inject:css -->
   <link rel="stylesheet" href="{{ asset('vendor/star-admin/template/css/vertical-layout-light/style.css') }}">
@@ -248,9 +244,6 @@
               <span class="menu-title">Stok</span>
             </a>
           </li>
-
-          {{-- OPERATOR --}}
-          @if (Auth::user()->role == 1)
           <li class="nav-item nav-category">Promo</li>
           <li class="nav-item">
             <a class="nav-link" data-bs-toggle="collapse" href="#disc" aria-expanded="false" aria-controls="disc">
@@ -265,6 +258,9 @@
               </ul>
             </div>
           </li>
+          {{-- OPERATOR --}}
+          @if (Auth::user()->role == 1)
+          
 
           <li class="nav-item nav-category">Laporan</li>
           <li class="nav-item">
@@ -329,19 +325,19 @@
   <!-- container-scroller -->
  {{-- plugin cart --}}
  <script src="{{ asset('js/tabslider.js') }}"></script>
- <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ho+j7jyWK8fNQe+A12Hb8AhRq26LrZ/JpcUGGOn+Y7RsweNrtN/tE3MoK7ZeZDyx" crossorigin="anonymous"></script>
+ <script src="{{ asset('vendor/bootstrap-4.5.3-dist/bootstrap.bundle.min.js') }}" ></script>
 
   <!-- plugins:js -->
-  <script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/js/bootstrap.bundle.min.js" integrity="sha384-gtEjrD/SeCtmISkJkNUaaKMoLD0//ElJ19smozuHV6z3Iehds+3Ulb9Bn9Plx0x4" crossorigin="anonymous"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.14.0-beta2/js/bootstrap-select.min.js" integrity="sha512-FHZVRMUW9FsXobt+ONiix6Z0tIkxvQfxtCSirkKc5Sb4TKHmqq1dZa8DphF0XqKb3ldLu/wgMa8mT6uXiLlRlw==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
-  <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.12.1/js/jquery.dataTables.js"></script>
-  <script src="https://cdn.datatables.net/1.12.1/js/jquery.dataTables.min.js"></script>
-  <script src="https://cdn.datatables.net/1.12.1/js/dataTables.bootstrap4.min.js"></script>
+  <script src="{{ asset('vendor/jquery-3.6.0/jquery-3.6.0.min.js') }}"></script>
+  <script src="{{ asset('vendor/bootstrap-5.0.2-dist/js/bootstrap.bundle.min.js') }}"></script>
+  {{-- <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.14.0-beta2/js/bootstrap-select.min.js" integrity="sha512-FHZVRMUW9FsXobt+ONiix6Z0tIkxvQfxtCSirkKc5Sb4TKHmqq1dZa8DphF0XqKb3ldLu/wgMa8mT6uXiLlRlw==" crossorigin="anonymous" referrerpolicy="no-referrer"></script> --}}
+  
+  <script type="text/javascript" charset="utf8" src="{{ asset('vendor/datatables-1.12.1/jquery.dataTables.js') }}"></script>
+  <script src="{{ asset('vendor/datatables-1.12.1/jquery.dataTables.min.js') }}"></script>
+  <script src="{{ asset('vendor/datatables-1.12.1/dataTables.bootstrap5.min.js') }}"></script>
   
   {{-- <script src="{{ asset('vendor/star-admin/template/vendors/js/vendor.bundle.base.js') }}"></script> --}}
   <!-- endinject -->
- 
 
   <!-- Plugin js for this page -->
   <script src="{{ asset('vendor/star-admin/template/vendors/chart.js/Chart.min.js') }}"></script>
