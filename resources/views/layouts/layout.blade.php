@@ -15,6 +15,8 @@
   <link rel="stylesheet" href="{{ asset('fonts/inter/fonts.css') }}">
 
   <link rel="stylesheet" href="{{ asset('css/index.css') }}" />
+  <link rel="shortcut icon" href="{{ asset('images/website/nobglogo2.png') }}" />
+
 
   <style>
     
