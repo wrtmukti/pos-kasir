@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\DiscountController;
 use App\Models\Discount;
 use App\Http\Controllers\TableController;
@@ -11,6 +12,7 @@ use Illuminate\Support\Facades\Route;
 
 
 Auth::routes();
+Route::post('/logout', [LoginController::class, 'logout'])->name('logout');
 
 Route::prefix('admin')->middleware('auth')->group(function () {
     Route::get('/', [App\Http\Controllers\AdminController::class, 'index']);
@@ -56,8 +58,9 @@ Route::prefix('admin')->middleware('auth')->group(function () {
     Route::post('/product/category/create', [App\Http\Controllers\ProductController::class, 'categoryCreate']);
     Route::post('/product/category', [App\Http\Controllers\ProductController::class, 'categoryChoose']);
     Route::post('/product/category/store', [App\Http\Controllers\ProductController::class, 'categoryStore']);
-    Route::post('/product/create', [App\Http\Controllers\ProductController::class, 'create']);
-    Route::post('/product', [App\Http\Controllers\ProductController::class, 'store']);
+    Route::get('/product/create', [App\Http\Controllers\ProductController::class, 'create'])->name('admin.product.create');
+    Route::post('/product/create', [App\Http\Controllers\ProductController::class, 'create'])->name('admin.product.create');
+    Route::post('/product/store', [App\Http\Controllers\ProductController::class, 'store'])->name('admin.product.store');
     Route::put('/product/{id}', [App\Http\Controllers\ProductController::class, 'update'])->name('product.update');
     Route::delete('/product/{id}', [App\Http\Controllers\ProductController::class, 'destroy']);
 
@@ -118,3 +121,8 @@ Route::get('/checkout/review', [App\Http\Controllers\GuestController::class, 're
 Route::post('/submits', [App\Http\Controllers\GuestController::class, 'submit'])->name('checkout.submit'); // simpan ke DB
 Route::get('/orders/status/{table_id}', [App\Http\Controllers\GuestController::class, 'orderStatus'])->name('order.status');
 Route::post('/check-voucher', [App\Http\Controllers\GuestController::class, 'check']);
+
+Route::get('/notifications/orders', function () {
+
+    return view('admin.layouts.notifications');
+});

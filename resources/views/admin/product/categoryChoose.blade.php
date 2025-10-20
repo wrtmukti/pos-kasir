@@ -34,7 +34,7 @@
   <div class="card shadow p-5">
     <div class="row justify-content-center">
       <div class="col-md-8">
-        <form action="/admin/product/create" method="POST">
+        <form action="{{ route('admin.product.create') }}" method="post">
           @csrf
           <input type="hidden" name="category_type" value="{{ $category_type }}">
           <div class="form-group">

@@ -1,193 +1,5 @@
 @extends('admin.layouts.layout')
 
-{{-- PUSH STYLES UNTUK RESPONSIVITAS MOBILE & FILTER --}}
-@push('styles')
-<style>
-    /* ------------------------------------------------ */
-    /* STYLING UMUM UNTUK ELEMEN FILTER */
-    /* ------------------------------------------------ */
-    .filter-form .filter-group {
-        display: flex;
-        flex-direction: column;
-    }
-    .filter-form select, 
-    .filter-form input[type="date"] {
-        box-sizing: border-box; /* Penting untuk responsif */
-    }
-    
-    /* ------------------------------------------------ */
-    /* MEDIA QUERY UNTUK MOBILE & TABLET (RESPONSIVITAS) */
-    /* ------------------------------------------------ */
-    @media screen and (max-width: 768px) {
-        
-        /* Filter Form di Mobile */
-        .filter-form {
-            flex-direction: column; /* Tumpuk semua elemen filter */
-            gap: 10px !important;
-        }
-        .filter-form .filter-group {
-            width: 100% !important; /* Ambil lebar penuh */
-            min-width: 100% !important;
-        }
-        .filter-form .filter-group:last-child {
-            flex-direction: row; /* Biarkan tombol Terapkan/Reset berdampingan */
-            justify-content: space-between;
-        }
-
-        /* --- Gaya Tabel di Mobile (Card View) --- */
-        .log-table-data thead {
-            display: none;
-        }
-        .log-table-data tr {
-            display: block;
-            margin-bottom: 15px;
-            border: 1px solid #ddd;
-            border-radius: 8px;
-            background-color: #fff;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-            padding: 10px;
-        }
-        .log-table-data td {
-            display: block;
-            text-align: right !important;
-            padding: 8px 0 !important;
-            border: none !important;
-            position: relative;
-        }
-        .log-table-data td::before {
-            content: attr(data-label);
-            float: left;
-            font-weight: bold;
-            color: #555;
-            font-size: 0.9em;
-        }
-        .log-table-data td[data-label="Deskripsi"] {
-            text-align: left !important;
-        }
-        .log-table-data td[data-label="Deskripsi"]::before {
-            float: none;
-            display: block;
-            margin-bottom: 5px;
-            text-align: left;
-        }
-        .log-table-data tr:has(td[colspan="5"]) {
-            display: table-row;
-            text-align: center;
-            border: none;
-            box-shadow: none;
-            margin-bottom: 0;
-        }
-        .log-table-data .badge-style {
-            white-space: normal; 
-        }
-    }
-    /* PAGINASI UNTUK MOBILE & TABLET (RESPONSIVITAS) */
-    /* ===================================== */
-/* Styling Asli (Default/Desktop) */
-/* ===================================== */
-.pagination-nav {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    gap: 6px;
-    padding: 15px;
-    margin-top: 25px;
-}
-
-/* Container untuk Nomor Halaman (Div Baru Anda) */
-.pagination-pages {
-    display: flex;
-    gap: 6px; /* Jarak antar nomor halaman, sama dengan gap di nav utama */
-    align-items: center;
-}
-
-.pagination-btn {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    padding: 8px 14px;
-    background: #ffffff;
-    border: 1px solid #ddd;
-    border-radius: 8px;
-    color: #333;
-    text-decoration: none;
-    transition: all 0.25s ease;
-    font-size: 14px;
-    min-width: 40px; 
-    box-sizing: border-box;
-}
-
-.pagination-btn:hover {
-    background: #007bff;
-    color: #fff;
-    border-color: #007bff;
-}
-
-.pagination-btn.active {
-    background: #007bff;
-    color: #fff;
-    font-weight: 600;
-}
-
-.pagination-btn.disabled {
-    background: #f5f5f5;
-    color: #aaa;
-    border-color: #eee;
-    cursor: not-allowed;
-    pointer-events: none;
-}
-
-.pagination-dots {
-    color: #aaa;
-    padding: 8px 0;
-    display: inline-flex;
-    align-items: center;
-}
-
-
-/* ===================================== */
-/* MEDIA QUERY UNTUK TAMPILAN MOBILE (< 600px) 📱 */
-/* ===================================== */
-@media (max-width: 600px) {
-    .pagination-nav {
-        gap: 4px;
-        padding: 10px;
-        margin-top: 15px;
-    }
-    
-    .pagination-pages {
-        gap: 4px; /* Samakan dengan gap di .pagination-nav */
-    }
-
-    .pagination-btn {
-        padding: 8px 10px;
-        font-size: 13px;
-        min-width: 32px;
-        border-radius: 6px;
-    }
-    
-    /* Target tombol panah untuk ukuran sentuhan yang lebih besar */
-    .pagination-arrow {
-        padding: 8px 12px;
-        min-width: 45px;
-    }
-
-    /* Aturan Kunci Mobile: Sembunyikan Nomor Halaman yang Jauh */
-    /* Targetkan semua tombol yang BUKAN tombol panah, BUKAN elipsis, dan BUKAN aktif. */
-    .pagination-pages > .pagination-btn:not(.active) {
-         display: none; 
-    }
-    
-    /* Tampilkan Elipsis di mobile */
-    .pagination-dots {
-        display: inline-flex; 
-        padding: 8px 5px; /* Kurangi padding elipsis */
-    }
-}
-
-
-</style>
-@endpush
 @section('content')
 <div class="content-wrapper log-page-wrapper" style="padding: 20px;">
     
@@ -219,7 +31,7 @@
                 <label for="action" style="display: block; margin-bottom: 5px; font-weight: bold; font-size: 0.9em;">Filter Aksi:</label>
                 <select name="action" id="action" onchange="this.form.submit()" style="width: 100%; padding: 8px; border: 1px solid #ccc; border-radius: 4px;">
                     <option value="">Semua Aksi</option>
-                    @foreach (['membuat', 'mengupdate', 'menghapus', 'LOGIN'] as $action)
+                    @foreach (['CREATE', 'UPDATE', 'DELETE', 'LOGIN'] as $action)
                         <option value="{{ $action }}" {{ request('action') == $action ? 'selected' : '' }}>
                             {{ Str::title($action) }}
                         </option>
@@ -303,40 +115,92 @@
     </div>
 
     {{-- Paginasi --}}
-    @if ($logs->hasPages())
-    <nav class="pagination-nav" role="navigation" aria-label="Pagination">
-        {{-- Tombol Previous --}}
-        @if ($logs->onFirstPage())
-            <span class="pagination-btn disabled pagination-arrow">&laquo;</span>
-        @else
-            <a href="{{ $logs->previousPageUrl() }}" class="pagination-btn pagination-arrow">&laquo;</a>
-        @endif
-
-        {{-- Nomor Halaman (termasuk elipsis) --}}
-        <div class="pagination-pages">
-            @foreach ($logs->links()->elements[0] ?? [] as $page => $url)
-                @if (is_string($page))
-                    {{-- Ini adalah Elipsis (...) --}}
-                    <span class="pagination-dots">{{ $url }}</span>
-                @elseif ($page == $logs->currentPage())
-                    {{-- Halaman Aktif --}}
-                    <span class="pagination-btn active">{{ $page }}</span>
-                @else
-                    {{-- Halaman Normal --}}
-                    <a href="{{ $url }}" class="pagination-btn">{{ $page }}</a>
-                @endif
-            @endforeach
-        </div>
-
-        {{-- Tombol Next --}}
-        @if ($logs->hasMorePages())
-            <a href="{{ $logs->nextPageUrl() }}" class="pagination-btn pagination-arrow">&raquo;</a>
-        @else
-            <span class="pagination-btn disabled pagination-arrow">&raquo;</span>
-        @endif
-    </nav>
-@endif
-
-
+    <div class="pagination-section" style="margin-top: 20px; text-align: center;">
+        {{ $logs->links() }}
+    </div>
 </div>
 @endsection
+
+{{-- PUSH STYLES UNTUK RESPONSIVITAS MOBILE & FILTER --}}
+@push('styles')
+<style>
+    /* ------------------------------------------------ */
+    /* STYLING UMUM UNTUK ELEMEN FILTER */
+    /* ------------------------------------------------ */
+    .filter-form .filter-group {
+        display: flex;
+        flex-direction: column;
+    }
+    .filter-form select, 
+    .filter-form input[type="date"] {
+        box-sizing: border-box; /* Penting untuk responsif */
+    }
+    
+    /* ------------------------------------------------ */
+    /* MEDIA QUERY UNTUK MOBILE & TABLET (RESPONSIVITAS) */
+    /* ------------------------------------------------ */
+    @media screen and (max-width: 768px) {
+        
+        /* Filter Form di Mobile */
+        .filter-form {
+            flex-direction: column; /* Tumpuk semua elemen filter */
+            gap: 10px !important;
+        }
+        .filter-form .filter-group {
+            width: 100% !important; /* Ambil lebar penuh */
+            min-width: 100% !important;
+        }
+        .filter-form .filter-group:last-child {
+            flex-direction: row; /* Biarkan tombol Terapkan/Reset berdampingan */
+            justify-content: space-between;
+        }
+
+        /* --- Gaya Tabel di Mobile (Card View) --- */
+        .log-table-data thead {
+            display: none;
+        }
+        .log-table-data tr {
+            display: block;
+            margin-bottom: 15px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            background-color: #fff;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            padding: 10px;
+        }
+        .log-table-data td {
+            display: block;
+            text-align: right !important;
+            padding: 8px 0 !important;
+            border: none !important;
+            position: relative;
+        }
+        .log-table-data td::before {
+            content: attr(data-label);
+            float: left;
+            font-weight: bold;
+            color: #555;
+            font-size: 0.9em;
+        }
+        .log-table-data td[data-label="Deskripsi"] {
+            text-align: left !important;
+        }
+        .log-table-data td[data-label="Deskripsi"]::before {
+            float: none;
+            display: block;
+            margin-bottom: 5px;
+            text-align: left;
+        }
+        .log-table-data tr:has(td[colspan="5"]) {
+            display: table-row;
+            text-align: center;
+            border: none;
+            box-shadow: none;
+            margin-bottom: 0;
+        }
+        .log-table-data .badge-style {
+            white-space: normal; 
+        }
+    }
+</style>
+@endpush

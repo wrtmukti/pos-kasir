@@ -5,7 +5,7 @@
   <!-- Required meta tags -->
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-  <title>Login || Kedai Papaji</title>
+  <title>Login || Bagaskara Admin</title>
   <!-- plugins:css -->
   <link rel="stylesheet" href="{{ asset('vendor/star-admin/template/vendors/feather/feather.css') }}">
   <link rel="stylesheet" href="{{ asset('vendor/star-admin/template/vendors/mdi/css/materialdesignicons.min.css') }}">
@@ -19,7 +19,7 @@
   <!-- inject:css -->
   <link rel="stylesheet" href="{{ asset('vendor/star-admin/template/css/vertical-layout-light/style.css') }}">
   <!-- endinject -->
-  <link rel="shortcut icon" href="{{ asset('vendor/star-admin/template/images/favicon.png') }}" />
+  <link rel="shortcut icon" href="{{ asset('images/website/nobglogo1.png') }}" />
 </head>
 
 <body>
@@ -30,52 +30,63 @@
           <div class="col-lg-4 mx-auto">
             <div class="auth-form-light text-left py-5 px-4 px-sm-5">
               <div class="brand-logo">
-                {{-- <img src="../../images/logo.svg" alt="logo"> --}}
+                <img src="{{ asset('images/website/nobglogo1.png') }}" alt="Logo" class="logo">
               </div>
               <h4>Hallo! Kamu belum login</h4>
               <h6 class="fw-light">Login Untuk melanjutkan</h6>
               <form class="pt-3" method="POST" action="{{ route('login') }}">
-                @csrf
-                <div class="form-group">
-                  <input type="email" id="email" class="form-control form-control-lg @error('email') is-invalid @enderror" name="email" value="{{ old('email') }}" required autocomplete="email" autofocus id="exampleInputEmail1" placeholder="Email" >
-                  @error('email')
-                    <span class="invalid-feedback" role="alert">
-                        <strong>{{ $message }}</strong>
-                    </span>
-                   @enderror
-                </div>
-                <div class="form-group">
-                  <input type="password" class="form-control form-control-lg @error('password') is-invalid @enderror" id="exampleInputPassword1" placeholder="Password"  name="password" required autocomplete="current-password">
-                  @error('password')
-                      <span class="invalid-feedback" role="alert">
-                          <strong>{{ $message }}</strong>
-                      </span>
-                  @enderror
-                </div>
-                <div class="mt-3">
-                  <button class="btn btn-block btn-primary btn-lg font-weight-medium auth-form-btn" type="submit" >Login</button>
-                    @if (Route::has('password.request'))
-                        <a class="btn btn-link" href="{{ route('password.request') }}"></a>
-                    @endif
-                </div>
-                <div class="my-2 d-flex justify-content-between align-items-center">
-                  <div class="form-check">
-                    <label class="form-check-label text-muted">
-                      <input type="checkbox" class="form-check-input"  name="remember" id="remember" {{ old('remember') ? 'checked' : '' }}>
-                      Biarkan saya tetap masuk
-                    </label>
+                  @csrf
+
+                  {{-- Email --}}
+                  <div class="form-group mb-3">
+                      <input type="email" 
+                            id="email" 
+                            class="form-control form-control-lg @error('email') is-invalid @enderror" 
+                            name="email" 
+                            value="{{ old('email') }}" 
+                            required 
+                            autocomplete="email" 
+                            autofocus 
+                            placeholder="Masukkan Email">
+
+                      {{-- error validation dari Laravel --}}
+                      @error('email')
+                          <small class="text-danger mt-1 d-block">{{ $message }}</small>
+                      @enderror
+
+                      {{-- pesan dari session jika login gagal --}}
+                      @if (session('error') && str_contains(session('error'), 'Email'))
+                          <small class="text-danger mt-1 d-block">{{ session('error') }}</small>
+                      @endif
                   </div>
-                  <a href="#" class="auth-link text-black">Lupa password?</a>
-                </div>
-                <div class="mb-2">
-                  <button type="button" class="btn btn-block btn-facebook auth-form-btn">
-                    <i class="ti-facebook me-2"></i>Login menggunakan facebook
-                  </button>
-                </div>
-                <div class="text-center mt-4 fw-light">
-                  Belum Memiliki akun? <a href="register.html" class="text-primary">Buat akun</a>
-                </div>
+
+                  {{-- Password --}}
+                  <div class="form-group mb-3">
+                      <input type="password" 
+                            class="form-control form-control-lg @error('password') is-invalid @enderror" 
+                            id="password" 
+                            placeholder="Password"  
+                            name="password" 
+                            required 
+                            autocomplete="current-password">
+
+                      @error('password')
+                          <small class="text-danger mt-1 d-block">{{ $message }}</small>
+                      @enderror
+
+                      @if (session('error') && str_contains(session('error'), 'Password'))
+                          <small class="text-danger mt-1 d-block">{{ session('error') }}</small>
+                      @endif
+                  </div>
+
+                  {{-- Tombol --}}
+                  <div class="mt-3">
+                      <button class="btn btn-block btn-primary btn-lg font-weight-medium auth-form-btn" type="submit">
+                          Login
+                      </button>
+                  </div>
               </form>
+
             </div>
           </div>
         </div>

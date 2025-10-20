@@ -137,14 +137,88 @@ class ProductController extends Controller
     public function store(Request $request)
     {
         // dd($request);
-        $request->validate([
-            'code' => 'required|string|max:255',
-            'name' => 'required|string|max:255',
-            'price' => 'required',
-            'status' => 'required',
-            'type' => 'required',
-            'image' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
-        ]);
+        // telur, lenjer, mie kuning, timun, cuka
+
+        $category_id = $request->category_id;
+        $category = Category::findOrFail($category_id);
+        // dd($category_id, $category);
+        $category_type = $category->category_type;
+        $stocks = Stock::orderby('name', 'asc')->where('type', $category_type)->get();
+        // dd($stocks);
+        // --- Validasi manual ---
+        if (empty($request->code)) {
+            return back()
+                ->withErrors(['code' => 'Kode produk wajib diisi.'])
+                ->withInput()
+                ->with([
+                    'category_id' => $category_id,
+                    'category_type' => $category_type,
+                    'category' => $category,
+                    'stocks' => $stocks,
+                ]);
+        }
+
+        if (empty($request->name)) {
+            return back()
+                ->withErrors(['name' => 'Nama produk wajib diisi.'])
+                ->withInput()
+                ->with([
+                    'category_id' => $category_id,
+                    'category_type' => $category_type,
+                    'category' => $category,
+                    'stocks' => $stocks,
+                ]);
+        }
+
+        if (empty($request->price) || !is_numeric($request->price) || $request->price < 0) {
+            return back()
+                ->withErrors(['price' => 'Harga harus berupa angka dan minimal 0.'])
+                ->withInput()
+                ->with([
+                    'category_id' => $category_id,
+                    'category_type' => $category_type,
+                    'category' => $category,
+                    'stocks' => $stocks,
+                ]);
+        }
+
+        if (!$request->hasFile('image')) {
+            return back()
+                ->withErrors(['image' => 'Gambar produk wajib diunggah.'])
+                ->withInput()
+                ->with([
+                    'category_id' => $category_id,
+                    'category_type' => $category_type,
+                    'category' => $category,
+                    'stocks' => $stocks,
+                ]);
+        } else {
+            $image = $request->file('image');
+            $allowedExtensions = ['jpeg', 'png', 'jpg', 'gif', 'svg'];
+            if (!in_array($image->getClientOriginalExtension(), $allowedExtensions)) {
+                return back()
+                    ->withErrors(['image' => 'Format gambar tidak valid (jpeg, png, jpg, gif, svg).'])
+                    ->withInput()
+                    ->with([
+                        'category_id' => $category_id,
+                        'category_type' => $category_type,
+                        'category' => $category,
+                        'stocks' => $stocks,
+                    ]);
+            }
+            if ($image->getSize() > 2048 * 1024) {
+                return back()
+                    ->withErrors(['image' => 'Ukuran gambar maksimal 2MB.'])
+                    ->withInput()
+                    ->with([
+                        'category_id' => $category_id,
+                        'category_type' => $category_type,
+                        'category' => $category,
+                        'stocks' => $stocks,
+                    ]);
+            }
+        }
+        // dd($request->all());
         $input = $request->all();
         if ($image = $request->file('image')) {
             $destinationPath = 'images/product/';
@@ -187,13 +261,84 @@ class ProductController extends Controller
         $product = Product::findOrFail($id);
 
         // Validasi input
-        $request->validate([
-            'name' => 'required|string|max:255',
-            'price' => 'required|numeric|min:0',
-            'status' => 'required|in:0,1',
-            'description' => 'nullable|string',
-            'image' => 'nullable|image|mimes:jpg,jpeg,png,webp|max:2048', // validasi gambar
-        ]);
+        $category_id = $request->category_id;
+        $category = Category::find($category_id)->first();
+        $category_type = $category->category_type;
+        $stocks = Stock::orderby('name', 'asc')->where('type', $category_type)->get();
+        // dd($stocks);
+        // --- Validasi manual ---
+        if (empty($request->code)) {
+            return back()
+                ->withErrors(['code' => 'Kode produk wajib diisi.'])
+                ->withInput()
+                ->with([
+                    'category_id' => $category_id,
+                    'category_type' => $category_type,
+                    'category' => $category,
+                    'stocks' => $stocks,
+                ]);
+        }
+
+        if (empty($request->name)) {
+            return back()
+                ->withErrors(['name' => 'Nama produk wajib diisi.'])
+                ->withInput()
+                ->with([
+                    'category_id' => $category_id,
+                    'category_type' => $category_type,
+                    'category' => $category,
+                    'stocks' => $stocks,
+                ]);
+        }
+
+        if (empty($request->price) || !is_numeric($request->price) || $request->price < 0) {
+            return back()
+                ->withErrors(['price' => 'Harga harus berupa angka dan minimal 0.'])
+                ->withInput()
+                ->with([
+                    'category_id' => $category_id,
+                    'category_type' => $category_type,
+                    'category' => $category,
+                    'stocks' => $stocks,
+                ]);
+        }
+
+        if (!$request->hasFile('image')) {
+            return back()
+                ->withErrors(['image' => 'Gambar produk wajib diunggah.'])
+                ->withInput()
+                ->with([
+                    'category_id' => $category_id,
+                    'category_type' => $category_type,
+                    'category' => $category,
+                    'stocks' => $stocks,
+                ]);
+        } else {
+            $image = $request->file('image');
+            $allowedExtensions = ['jpeg', 'png', 'jpg', 'gif', 'svg'];
+            if (!in_array($image->getClientOriginalExtension(), $allowedExtensions)) {
+                return back()
+                    ->withErrors(['image' => 'Format gambar tidak valid (jpeg, png, jpg, gif, svg).'])
+                    ->withInput()
+                    ->with([
+                        'category_id' => $category_id,
+                        'category_type' => $category_type,
+                        'category' => $category,
+                        'stocks' => $stocks,
+                    ]);
+            }
+            if ($image->getSize() > 2048 * 1024) {
+                return back()
+                    ->withErrors(['image' => 'Ukuran gambar maksimal 2MB.'])
+                    ->withInput()
+                    ->with([
+                        'category_id' => $category_id,
+                        'category_type' => $category_type,
+                        'category' => $category,
+                        'stocks' => $stocks,
+                    ]);
+            }
+        }
 
         // Simpan data dasar produk
         $product->name = $request->name;
@@ -244,7 +389,10 @@ class ProductController extends Controller
     {
         $link = Product::find($id);
         logActivity('menghapus Produk', "Pengguna menghapus produk: {$link->name}");
-
+        // Hapus gambar lama jika ada dan file-nya ada di folder
+        if ($link->image && file_exists(public_path('images/product/' . $link->image))) {
+            unlink(public_path('images/product/' . $link->image));
+        }
         Product::destroy($id);
         if ($link->type == 0) {
             return redirect()->to('/admin/product/food')->with('danger', 'item dihapus:(');
