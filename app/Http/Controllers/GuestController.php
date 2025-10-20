@@ -112,6 +112,18 @@ class GuestController extends Controller
 
                 if ($customers !== null) {
                     $customer_id = $customers->id;
+
+                    if ($request->has('customer_name') or $request->has('customer_whatsapp')) {
+                        $customer = new Customer();
+                        $customer->no_table = $request->no_table;
+                        if ($request->has('customer_name')) {
+                            $customer->name = $request->customer_name;
+                        }
+                        if ($request->has('customer_whatsapp')) {
+                            $customer->whatsapp = $request->customer_whatsapp;
+                        }
+                        $customer->save();
+                    }
                 } else {
                     $customer = new Customer();
                     $customer->no_table = $request->no_table;
@@ -317,6 +329,16 @@ class GuestController extends Controller
 
                 if ($customers !== null) {
                     $customer_id = $customers->id;
+
+                    $customer = new Customer();
+                    $customer->no_table = $request->no_table;
+                    if ($request->has('customer_name')) {
+                        $customer->name = $request->customer_name;
+                    }
+                    if ($request->has('customer_whatsapp')) {
+                        $customer->whatsapp = $request->customer_whatsapp;
+                    }
+                    $customer->save();
                 } else {
                     $customer = new Customer();
                     $customer->no_table = $request->no_table;

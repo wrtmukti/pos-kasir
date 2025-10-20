@@ -112,7 +112,7 @@
 
     <div id="cart">
       <span id="cart-info" class="font-weight-bold text-brown"></span>
-      <button type="submit" class="btn btn-brown btn-sm">Checkout</button>
+      <button type="button" class="btn btn-brown btn-sm">Cek kerangjang</button>
     </div>
 
     <!-- Overlay Detail Keranjang -->
@@ -412,10 +412,10 @@
         </div>
       </div>
       <div class="d-flex align-items-center ml-auto">
-        <button onclick="decreaseQty(${item.id})" class="btn btn-outline-secondary btn-sm"
+        <button type="button" onclick="decreaseQty(${item.id})" class="btn btn-outline-secondary btn-sm"
           style="width:32px;height:32px;display:flex;align-items:center;justify-content:center;border-radius:6px;">-</button>
         <span class="px-2 font-weight-bold">${item.qty}</span>
-        <button onclick="addToCart(${item.id})" class="btn btn-outline-secondary btn-sm"
+        <button type="button" onclick="addToCart(${item.id})" class="btn btn-outline-secondary btn-sm"
           style="width:32px;height:32px;display:flex;align-items:center;justify-content:center;border-radius:6px;">+</button>
       </div>
 
