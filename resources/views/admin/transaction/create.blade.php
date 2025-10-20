@@ -23,15 +23,21 @@
               </span>
           @enderror
         </div>
-        <div class="form-group row text-center">
-          <div class="form-group col-6">
-            <label for="payment_method">Cash</label>
-            <input id="cash" type="text" class="form-control" name="cash" value="" placeholder="Cash"  >
-          </div>
-          <div class="form-group col-6">
-            <label for="payment_method">Debit</label>
-            <input id="debit" type="text" class="form-control" name="debit" value="" placeholder="Debit" >
-          </div>
+        <div class="form-group">
+          <label for="payment_method">Metode Pembayaran</label>
+          <select name="payment_method" class="form-control" id="exampleFormControlSelect1" value=" {{ old('payment_status') }}">>
+            <option value="cash">Cash</option>
+            <option value="debit">Debit</option>
+          </select>          
+          @error('payment_method')
+              <span class="invalid-feedback" role="alert">
+                  <strong>{{ $message }}</strong>
+              </span>
+          @enderror
+        </div>
+                 <div class="form-group">
+            <label for="payment_method">Nominal</label>
+            <input id="cash" type="text" class="form-control" name="value" value="" placeholder="Nominal Transaksi"  >
         </div>
         <div class="form-group">
             <label for="note">Catatan Transaksi</label>

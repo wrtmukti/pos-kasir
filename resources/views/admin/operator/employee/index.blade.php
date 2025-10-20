@@ -63,7 +63,7 @@
                       <a  class="nav-link  text-dark">Operator</a>
                       @endif
                     </td>
-                    <td>
+                    <td  class="text-center">
                       <form action="/admin/operator/employee/delete/{{$data->id}}" method="post" style="text-decoration: none">
                         @csrf
                         @method('DELETE')

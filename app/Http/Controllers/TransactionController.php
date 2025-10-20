@@ -282,11 +282,21 @@ class TransactionController extends Controller
             'payment_status' => 'required',
         ]);
 
+        if ($request->payment_method == 'cash') {
+            $cash = $request->value;
+            $debit = 0;
+        } else {
+            $cash = 0;
+            $debit = $request->value;
+        }
+
+
         Transaction::create([
             'payment_status' => $request->payment_status,
-            'cash' => $request->cash,
-            'debit' => $request->debit,
-            'total_price' => $request->cash + $request->debit,
+            'cash' => $cash,
+            'debit' => $debit,
+            'total_price' => $cash + $debit,
+            'kembalian' => '0',
             'note' => $request->note,
         ]);
 

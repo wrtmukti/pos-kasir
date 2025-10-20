@@ -78,7 +78,7 @@
     <h6 class="font-weight-bold text-brown">Menu</h6>
     <ul class="list-unstyled mt-3">
       <li><a href="/{{ $table->id }}" class="d-block py-2 text-brown">Beranda</a></li>
-      <li><a href="/orders/status/{{ $table->id }}" class="d-block py-2 text-brown">Status Order</a></li>
+      <li><a href="/orders/status/{{ $table->id }}" class="d-block py-2 text-brown">Status Pesanan</a></li>
     </ul>
   </div>
 

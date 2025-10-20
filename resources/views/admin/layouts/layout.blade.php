@@ -194,8 +194,8 @@
             </a>
             <div class="collapse" id="ui-basic">
               <ul class="nav flex-column sub-menu">
-                <li class="nav-item"> <a class="nav-link" href="/admin/transaction/">Riwayat Transaksi</a></li>
                 <li class="nav-item"> <a class="nav-link" href="/admin/transaction/summary/1">Rekap Kas</a></li>
+                <li class="nav-item"> <a class="nav-link" href="/admin/transaction/">Riwayat Transaksi</a></li>
               </ul>
             </div>
           </li>
