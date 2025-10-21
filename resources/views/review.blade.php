@@ -72,7 +72,7 @@
               <input type="hidden" name="products[{{ $loop->index }}][quantity]" value="{{ $qty }}">
               <textarea name="products[{{ $loop->index }}][note]" 
                         class="form-control mt-1" rows="2" 
-                        placeholder="Tambahkan catatan jika diperlukan"></textarea>
+                        placeholder="Tambahkan catatan jika diperlukan" style="border-radius: 10px;"></textarea>
             </div>
           </div>
 
@@ -95,7 +95,7 @@
       <div class="card-body">
         <h6 class="font-weight-bold text-brown mb-2">Gunakan Voucher</h6>
         <div class="input-group">
-          <input type="text" id="voucher-code" name="voucher_code" class="form-control" placeholder="Masukkan kode voucher">
+          <input type="text" id="voucher-code" name="voucher_code" class="form-control mr-1" placeholder="Masukkan kode voucher" style="border-radius: 10px;">
           <button type="button" id="check-voucher" class="btn btn-brown">Cek</button>
         </div>
         <div id="voucher-result" class="mt-2"></div>
