@@ -150,6 +150,7 @@
 
     let filtered;
 
+    // 🔍 Filter pencarian
     if (searchTerm) {
       filtered = products.filter(p =>
         (p.name?.toLowerCase() ?? "").includes(searchTerm.toLowerCase()) ||
@@ -177,11 +178,12 @@
       col.className = "col-6 col-md-4 col-lg-3 mb-3 product-item";
 
       const imgSrc = p.image ? `/images/product/${p.image}` : '/default.jpg';
+
       const originalPrice = Number(p.price_original || p.price || 0);
       let finalPrice = originalPrice;
       let diskonLabel = "";
 
-      // --- Hitung diskon ---
+      // --- 🎯 Hitung diskon ---
       if (p.diskons && p.diskons.length > 0) {
         const d = p.diskons[0];
         if (d.type_diskon === 0) {
@@ -193,30 +195,7 @@
         }
       }
 
-      // 🔥 CEK STOK TERSEDIA VS KEBUTUHAN
-      // 🔥 CEK STOK TERSEDIA VS KEBUTUHAN
-      let isOutOfStock = false;
-
-      if (p.stocks && p.stocks.length > 0) {
-        // Produk dianggap HABIS jika ADA bahan yang kekurangan stok
-        isOutOfStock = p.stocks.some(s => {
-          const available = Number(s.amount ?? 0);
-          const needed = Number(s.pivot?.quantity ?? 0);
-
-          // Jika pivot tidak punya quantity, anggap bahan itu tidak dipakai (stok aman)
-          if (!needed || needed <= 0) return false;
-
-          // Jika stok bahan kurang dari kebutuhan, maka produk habis
-          return available < needed;
-        });
-      } else {
-        // Kalau produk belum punya relasi stok sama sekali, dianggap habis
-        isOutOfStock = true;
-      }
-
-
-
-      // 💵 Tampilan harga
+      // --- 💵 Tampilan harga ---
       let priceDisplay = "";
       if (finalPrice < originalPrice) {
         priceDisplay = `
@@ -238,14 +217,19 @@
         `;
       }
 
-      // 🧱 Card produk
-      const escapeHTML = (str) =>
-        !str ? "" : str.replace(/[&<>"']/g, (m) => ({
-          "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#039;"
-        }[m]));
-
+      // --- 🧱 Card produk ---
+      //new UPDATE <h1>
+      function escapeHTML(str) {
+          if (!str) return '';
+          return str
+            .replace(/&/g, "&amp;")
+            .replace(/</g, "&lt;")
+            .replace(/>/g, "&gt;")
+            .replace(/"/g, "&quot;")
+            .replace(/'/g, "&#039;");
+        }
       col.innerHTML = `
-        <div class="card h-100 shadow-sm position-relative ${isOutOfStock ? 'opacity-50' : ''}">
+        <div class="card h-100 shadow-sm position-relative">
           <img src="${imgSrc}" class="card-img-top" alt="${escapeHTML(p.name)}" style="height:150px;object-fit:cover;">
           <div class="card-body d-flex flex-column">
             <div class="d-flex justify-content-between align-items-center flex-wrap mb-1">
@@ -254,14 +238,12 @@
             </div>
             <small class="text-muted mb-2">${escapeHTML(p.description ?? '')}</small>
             ${priceDisplay}
-            ${
-              isOutOfStock
-                ? `<button class="btn btn-secondary btn-sm mt-auto" disabled>Maaf, habis</button>`
-                : `<button class="btn btn-brown btn-sm mt-auto" onclick="addToCart(${p.id})">Tambah</button>`
-            }
+            <button class="btn btn-brown btn-sm mt-auto" onclick="addToCart(${p.id})">Tambah</button>
           </div>
         </div>
+
       `;
+      // end upda
 
       container.appendChild(col);
 
@@ -272,7 +254,6 @@
 
     if (listView) applyListView();
   }
-
 
 
 

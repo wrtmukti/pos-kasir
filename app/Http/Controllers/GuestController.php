@@ -26,6 +26,7 @@ class GuestController extends Controller
         // ambil produk + kategori + diskon aktif
         $products = Product::with([
             'category',
+            'stocks',
             'diskons' => function ($q) use ($now) {
                 $q->where('status', 'active')
                     ->where('start_date', '<=', $now)
