@@ -14,8 +14,10 @@
     @endif
 
     {{-- Judul --}}
+    <div class="row justify-content-center">
+        <h5 class="font-weight-bold text-brown mb-0 ">Status Pesanan Anda</h5>
+    </div>
     <div class="row mb-3 justify-content-center">
-        <h5 class="font-weight-bold text-brown mb-0">Status Pesanan Anda</h5><br>
         <small class="text-muted">Diperbarui {{ now()->format('d M Y, H:i') }}</small>
     </div>
     
@@ -44,16 +46,16 @@
                                         <span class="badge rounded-pill bg-secondary text-white px-3 py-2">Menunggu Konfirmasi</span>
                                         @break
                                     @case(1)
-                                        <span class="badge rounded-pill bg-warning text-dark px-3 py-2">Pesanan Diproses</span>
+                                        <span class="badge rounded-pill bg-warning text-white px-3 py-2">Pesanan Diproses</span>
                                         @break
                                     @case(2)
-                                        <span class="badge rounded-pill bg-info text-dark px-3 py-2">Menunggu Pembayaran</span>
+                                        <span class="badge rounded-pill bg-info text-white px-3 py-2">Menunggu Pembayaran</span>
                                         @break
                                     @case(3)
-                                        <span class="badge rounded-pill bg-success px-3 py-2">Selesai</span>
+                                        <span class="badge rounded-pill bg-success text-white px-3 py-2">Selesai</span>
                                         @break
                                     @case(4)
-                                        <span class="badge rounded-pill bg-danger px-3 py-2">Pesanan Ditolak</span>
+                                        <span class="badge rounded-pill bg-danger text-white px-3 py-2">Pesanan Ditolak</span>
                                         <span class="">"{{ $order->note }}"</span>
                                         @break
                                     @default
@@ -75,7 +77,7 @@
                     <tfoot>
                         <tr class="bg-light">
                             <td colspan="2" class="fw-bold text-end text-brown py-3">Total Pembayaran:</td>
-                            <td class="fw-bold  py-3">
+                            <td class="font-weight-bold  py-3">
                                 Rp {{ number_format($orders->where('status', '<>', 4)->sum('total_payment'), 0, ',', '.') }}
                             </td>
                         </tr>

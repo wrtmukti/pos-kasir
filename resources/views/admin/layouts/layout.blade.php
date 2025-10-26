@@ -340,15 +340,29 @@
         fetch('/notifications/orders')
             .then(response => response.text())
             .then(html => {
-                document.querySelector('#notifcuy').innerHTML = html;
+                // buat DOM parser
+                const parser = new DOMParser();
+                const doc = parser.parseFromString(html, 'text/html');
+
+                // ambil bagian isi notif baru & jumlahnya
+                const newList = doc.querySelector('.notif-list').innerHTML;
+                const newCount = doc.querySelector('.notif-count');
+
+                // update hanya isi dropdown
+                document.querySelector('.notif-list').innerHTML = newList;
+
+                // update jumlah di lonceng
+                const notifCountEl = document.querySelector('.notif-count');
+                if (newCount && newCount.textContent.trim() !== '0') {
+                    notifCountEl.textContent = newCount.textContent;
+                    notifCountEl.classList.remove('d-none');
+                } else {
+                    notifCountEl.classList.add('d-none');
+                }
             });
-    }, 5000); // 5 detik sekali
+    }, 5000);
   </script>
-  <script>
-    $(document).ready( function () {
-    $('#saleTable').DataTable();
-} );
-  </script>
+
   {{-- tab scroller  --}}
   <script>
     var hidWidth;

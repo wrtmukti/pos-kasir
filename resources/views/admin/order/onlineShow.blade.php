@@ -11,7 +11,7 @@
 @foreach ($orders as $order)
   <div class="row mt-3 justify-content-start">
     <div class="col">
-      <p class="fw-bold">Pesanan ke-{{ $loop->iteration }}<span class="text-success"> ({{ $order->created_at->diffForHumans(); }})</span></p>
+      <p class="fw-bold">Pesanan ke {{ $loop->iteration }}<span class="text-success"> ({{ $order->created_at->diffForHumans(); }})</span></p>
     </div>
   </div>
   <div class="row ">
@@ -114,7 +114,7 @@
                   <div class="modal-dialog">
                     <div class="modal-content">
                       <div class="modal-header">
-                        <h5 class="modal-title" id="exampleModalLabel">Pesanan Meja No. {{ $order->customer->no_table }}</h5>
+                        <h5 class="modal-title" id="exampleModalLabel">Berikan alasan pesanan ditolak</h5>
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                       </div>
                       <form action="/admin/order/{{$order->id}}" method="post">
@@ -123,8 +123,8 @@
                         <div class="modal-body">            
                           <input type="hidden" name="status" value="4">
                           <div class="form-group">
-                            <label for="note">Catatan </label>
-                            <textarea class="form-control" id="note" type="text" name="note" ></textarea>
+                            <label for="note">Catatan  </label>
+                            <input class="form-control" id="note" type="text" name="note" placeholder="alasan pesanan ditolak" required></input>
                           </div>
                         </div>
                   
@@ -147,7 +147,7 @@
                   <div class="modal-dialog">
                     <div class="modal-content">
                       <div class="modal-header">
-                        <h5 class="modal-title" id="exampleModalLabel">Pesanan Meja No. {{ $order->customer->no_table }}</h5>
+                        <h5 class="modal-title" id="exampleModalLabel">Detail Pesanan ke {{ $loop->iteration }}</h5>
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                       </div>
                       <form action="/admin/order/{{$order->id}}" method="post">
@@ -265,7 +265,78 @@
                   </div>
                 @endif
                 <div class="col-6 col-lg-1 me-lg-3">
-                  <a  role="button" class="badge badge-success nav-link rounded-pill p-2">Menunggu Pembayaran</a>
+                  <a  role="button" class="badge badge-success nav-link rounded-pill p-2" data-bs-toggle="modal" data-bs-target="#Menunggu{{ $order->id }}">Menunggu Pembayaran</a>
+                </div>
+
+                <div class="modal fade" id="Menunggu{{ $order->id }}" tabindex="-1" aria-labelledby="MenungguLabel" aria-hidden="true">
+                  <div class="modal-dialog">
+                    <div class="modal-content">
+                      <div class="modal-header">
+                        <h5 class="modal-title" id="exampleModalLabel">Detail Pesanan ke {{ $loop->iteration }}</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                      </div>
+                      <form>
+                        @csrf
+                        {{ method_field('Patch') }}
+                        <div class="modal-body">            
+                          <input type="hidden" name="status" value="1">
+                          @foreach ($order->products as $data)
+                            <input class="form-group" type="hidden" name="product_id[]" value="{{ $data->id }}" readonly="readonly">
+                            <div class="form-group">
+                              {{-- <label for="product" class="fw-bold">Produk ke-{{ $loop->iteration }}</label> --}}
+                              <div class="row">
+                                <div class="col-6">
+                                  <label for="name">Produk</label>
+                                  <input class="form-control" id="name" type="text" id="product" name="" value="{{ $data->name }}" readonly="readonly">
+                                </div>
+                                <div class="col-6">
+                                  <label for="name">Jumlah</label>
+                                  <input class=" form-control text-center" id="amount" type="text" name="amount[]" value="{{ $data->pivot->quantity }}" readonly="readonly">
+                                </div>
+                              </div>
+                             
+                            </div>
+                          @endforeach
+
+                          <div class="form-group">
+                            <label for="amount">Total Harga Pesanan </label>
+                            <input class="form-control text-center" id="amount" type="text" name="" value="{{ $order->price }}" readonly="readonly">
+                          </div>
+                                                    <hr>
+                          @if($order->voucher_id)
+                          <div class="row">
+                            <label for="product" class="fw-bold">Voucher diterapkan</label>
+                            <div class="col-6">
+                              <div class="form-group">
+                                <label for="amount">{{ $order->voucher->name }}</label>
+                                 @if($order->voucher->voucher_type === 0)
+                                <input class="form-control text-center" id="amount" type="text" name="" value="Potongan {{$order->voucher->value}}%" readonly="readonly">
+                                @elseif ($order->voucher->voucher_type === 1)
+                                <input class="form-control text-center" id="amount" type="text" name="" value="Potongan Rp.{{ $order->voucher->value }}" readonly="readonly">
+                                @endif
+                              </div>
+                            </div>
+                            <div class="col-6">
+                              <div class="form-group">
+                                <label for="amount">Jumlah Potongan</label>
+                                @if($order->voucher->voucher_type === 0)
+                                <input class="form-control text-center" id="amount" type="text" name="" value="-{{ $order->price * $order->voucher->value / 100  }}" readonly="readonly">
+                                @elseif ($order->voucher->voucher_type === 1)
+                                <input class="form-control text-center" id="amount" type="text" name="" value="-{{ $order->voucher->value }}" readonly="readonly">
+                                @endif
+                              </div>
+                            </div>
+                          </div>
+                          @endif
+                          <div class="form-group">
+                            <label for="amount">Total Pembayaran </label>
+                            <input class="form-control text-center fw-bold" id="amount" type="text" name="total_payment" value="{{ $order->total_payment }}" readonly="readonly">
+                          </div>
+                        </div>
+                
+                      </form>
+                    </div>
+                  </div>
                 </div>
               </div>
               @break

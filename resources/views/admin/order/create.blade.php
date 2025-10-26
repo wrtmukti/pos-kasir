@@ -29,6 +29,7 @@
           <input name="type" type="hidden" value="1">
           <input name="price" id="total-prices" type="hidden" readonly>
           <input name="total_payment" id="total-payment" type="hidden" readonly>
+          <input type="hidden" name="voucher_id" id="voucher_code_hidden">
 
           <div class="modal-body producstOnCart hide">
             <ul id="buyItems">
@@ -36,7 +37,7 @@
             </ul>
           </div>
 
-          <div class="px-4">
+          <div id="voucherinput" class="px-4  d-none">
             <!-- Total Harga -->
             <div class="mb-3">
               <label class="fw-bold">Total Harga</label>
@@ -66,7 +67,7 @@
             <button type="submit" class="btn btn-primary checkout">Checkout</button>
           </div>
 
-          <input type="hidden" name="voucher_id" id="voucher_code_hidden">
+          
         </form>
       </div>
     </div>
@@ -214,12 +215,15 @@ const updateShoppingCartHTML = () => {
       </li>`);
     parentElement.innerHTML = result.join('');
     document.querySelector('#modal-footer').classList.remove('d-none');
+    document.querySelector('#voucherinput').classList.remove('d-none');
     cartSumPrice.innerHTML = 'Rp. ' + countTheSumPrice() + ',-';
     updateTotals();
   } else {
     parentElement.innerHTML = '<h4 class="empty">Keranjang Kamu Kosong :(</h4>';
     cartSumPrice.innerHTML = '';
     document.querySelector('#modal-footer').classList.add('d-none');
+    document.querySelector('#voucherinput').classList.add('d-none');
+    
   }
 }
 
