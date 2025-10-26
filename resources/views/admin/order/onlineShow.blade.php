@@ -22,7 +22,7 @@
             <div class="row">
               @foreach ($order->products as $data)
                 <div class="col-6 col-md-3 mb-4 d-flex">
-                  <div class="card product-card shadow-sm w-100 rounded-3 overflow-hidden">
+                  <div class="card product-card shadow-sm w-100 rounded-3 overflow-hidden  px-1">
                     <img 
                       src="{{ asset('images/product/' . $data->image) }}" 
                       class="card-img-top product-image" 
@@ -64,7 +64,7 @@
                     @if ($data->pivot->note !== null)    
                       <div class="card-footer rounded bg-secondary text-white shadow mb-3">
                         <div class="row  py-1 px-2 ">
-                          <textarea class=" rounded" readonly="readonly">*{{ $data->pivot->note }}</textarea>
+                          <textarea class=" rounded" readonly="readonly">{{ $data->pivot->note }}</textarea>
                         </div>
                       </div>
                     @endif

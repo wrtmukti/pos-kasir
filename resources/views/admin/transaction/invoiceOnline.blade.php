@@ -180,7 +180,7 @@
                     <li>Total</li>
                     <li>Bayar Tunai</li>
                     <li>Bayar Debit</li>
-                    <li>Kembalian</li>
+                    <li>Kembali</li>
                 </ul>
             </div>
             <div style="text-align: right;">
